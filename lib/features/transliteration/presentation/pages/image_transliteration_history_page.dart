@@ -200,11 +200,7 @@ class _ImageTransliterationHistoryPageState
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFFFFFDE7), // Yellow 50
-                Colors.white,
-                const Color(0xFFFFF9C4), // Yellow 100
-              ],
+              colors: [Colors.amber[50]!, Colors.white, Colors.teal[50]!],
               stops: const [0.0, 0.5, 1.0],
             ),
           ),
@@ -218,7 +214,19 @@ class _ImageTransliterationHistoryPageState
             height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFFFD700).withOpacity(0.1),
+              color: Colors.amber[100]!.withOpacity(0.3),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -50,
+          left: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.teal[100]!.withOpacity(0.3),
             ),
           ),
         ),

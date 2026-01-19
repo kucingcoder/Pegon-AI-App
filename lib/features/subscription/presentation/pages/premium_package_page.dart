@@ -90,21 +90,42 @@ class PremiumPackagePage extends StatelessWidget {
   Widget _buildBackground() {
     return Stack(
       children: [
+        // Base Gradient
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFFFFDE7), // Light Yellow
-                Colors.white,
-                Color(0xFFE0F2F1), // Light Teal
-              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.amber[50]!, Colors.white, Colors.teal[50]!],
+              stops: const [0.0, 0.5, 1.0],
             ),
           ),
         ),
-        // Decorative shapes could be added here if needed to match exact design
-        // For now, the clean gradient serves the purpose well.
+        // Abstract Shapes
+        Positioned(
+          top: -100,
+          right: -100,
+          child: Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.amber[100]!.withOpacity(0.3),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -50,
+          left: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.teal[100]!.withOpacity(0.3),
+            ),
+          ),
+        ),
       ],
     );
   }

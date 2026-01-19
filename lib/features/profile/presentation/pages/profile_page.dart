@@ -214,6 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           'Male',
                           'Laki-laki',
                           Icons.male,
+                          Colors.blue, // Active color for Male
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -222,6 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           'Female',
                           'Perempuan',
                           Icons.female,
+                          Colors.pink, // Active color for Female
                         ),
                       ),
                     ],
@@ -308,18 +310,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child: OutlinedButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: _logout,
-                      icon: const Icon(Icons.logout, color: Colors.red),
+                      icon: const Icon(Icons.logout, color: Colors.white),
                       label: const Text(
                         'Keluar',
-                        style: TextStyle(color: Colors.red, fontSize: 16),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.red),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        elevation: 0,
                       ),
                     ),
                   ),
@@ -451,7 +455,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildGenderSelector(String value, String label, IconData icon) {
+  Widget _buildGenderSelector(
+    String value,
+    String label,
+    IconData icon,
+    Color activeColor,
+  ) {
     final isSelected = _selectedGender == value;
     return GestureDetector(
       onTap: () => setState(() => _selectedGender = value),
@@ -459,14 +468,10 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.pink[50]
-              : Colors.white, // Pink tint for selected logic
-          // Note: In mockup, Female is pink, Male is grey/white. I'll make it generic or specific.
-          // Let's stick generic 'active' color or follow design closer if possible.
-          // Desgin: Male (White), Female (Pink active).
-          // I'll make isSelected color specific.
+              ? activeColor.withOpacity(0.1)
+              : Colors.white, // Tint for selected
           border: Border.all(
-            color: isSelected ? Colors.pink : Colors.grey[200]!,
+            color: isSelected ? activeColor : Colors.grey[200]!,
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(16),
@@ -476,7 +481,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.pink : Colors.grey[200],
+                color: isSelected ? activeColor : Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -488,7 +493,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.pink : Colors.grey[600],
+                color: isSelected ? activeColor : Colors.grey[600],
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -20,8 +20,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pegon AI : Membaca, Menulis, dan Belajar',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFFD700)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFFFD700),
+          primary: Colors
+              .orange[800], // Darker orange for better contrast as primary
+          secondary: Colors.orange,
+        ),
         useMaterial3: true,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.orange,
+          selectionHandleColor: Colors.orange,
+          selectionColor: Colors.orange.withOpacity(0.3),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.orange, width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          activeIndicatorBorder: BorderSide(color: Colors.orange),
+        ),
       ),
       home: isLoggedIn ? const DashboardPage() : const LoginPage(),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/dashboard_service.dart';
 import '../../data/models/dashboard_model.dart';
+import '../../../profile/presentation/pages/profile_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -203,59 +204,73 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildHeader(User user) {
-    return Row(
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-            image: user.photoProfile.isNotEmpty
-                ? DecorationImage(
-                    image: NetworkImage(user.photoProfile),
-                    fit: BoxFit.cover,
-                  )
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        ).then((_) {
+          // Refresh dashboard data when returning from profile (in case name/photo changed)
+          _loadData();
+        });
+      },
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+              image: user.photoProfile.isNotEmpty
+                  ? DecorationImage(
+                      image: NetworkImage(user.photoProfile),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+            child: user.photoProfile.isEmpty
+                ? const Icon(Icons.person, color: Colors.white)
                 : null,
           ),
-          child: user.photoProfile.isEmpty
-              ? const Icon(Icons.person, color: Colors.white)
-              : null,
-        ),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              user.fullName,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: user.isPremium ? Colors.amber : Colors.green[100],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                user.category,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: user.isPremium ? Colors.black : Colors.green[800],
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                user.fullName,
+                style: const TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: user.isPremium ? Colors.amber : Colors.green[100],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  user.category,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: user.isPremium ? Colors.black : Colors.green[800],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

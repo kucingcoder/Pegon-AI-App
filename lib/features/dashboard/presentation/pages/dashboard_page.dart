@@ -61,90 +61,144 @@ class _DashboardPageState extends State<DashboardPage> {
     final user = _data!.user;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Light background
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. Header (Profile)
-              _buildHeader(user),
-              const SizedBox(height: 20),
+      body: Stack(
+        children: [
+          _buildBackground(),
+          SafeArea(
+            child: RefreshIndicator(
+              onRefresh: _loadData,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. Header (Profile)
+                    _buildHeader(user),
+                    const SizedBox(height: 20),
 
-              // 2. Progress Card
-              _buildProgressCard(user),
-              const SizedBox(height: 20),
+                    // 2. Progress Card
+                    _buildProgressCard(user),
+                    const SizedBox(height: 20),
 
-              // 3. Premium/Upgrade Card
-              if (!user.isPremium) _buildUpgradeCard(),
-              if (user.isPremium) _buildPremiumCard(user),
-              const SizedBox(height: 20),
+                    // 3. Premium/Upgrade Card
+                    if (!user.isPremium) _buildUpgradeCard(),
+                    if (user.isPremium) _buildPremiumCard(user),
+                    const SizedBox(height: 20),
 
-              // 4. Statistics Section
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/images/icon_statistic.png',
-                    width: 24,
-                    height: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Statistikmu',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                    // 4. Statistics Section
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/icon_statistic.png',
+                          width: 16,
+                          height: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          'Statistikmu',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildStatistics(
-                imageCount: _data!.imageTransliterationCount,
-                textCount: _data!.textTransliterationCount,
-              ),
-              const SizedBox(height: 24),
+                    const SizedBox(height: 12),
+                    _buildStatistics(
+                      imageCount: _data!.imageTransliterationCount,
+                      textCount: _data!.textTransliterationCount,
+                    ),
+                    const SizedBox(height: 24),
 
-              // 5. Action Buttons (Grid/List)
-              const Text(
-                'Apa yang ingin anda lakukan?',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              _buildActionCard(
-                icon: Icons.image,
-                color: Colors.orange,
-                title: 'Transliterasi Gambar',
-                subtitle:
-                    'Ubah teks pegon dari foto atau gambar di galeri menjadi latin',
-                onTap: () {},
-              ),
-              const SizedBox(height: 12),
-              _buildActionCard(
-                icon: Icons.description,
-                color: Colors.teal,
-                title: 'Transliterasi Teks',
-                subtitle: 'Ubah teks latin menjadi pegon',
-                onTap: () {},
-              ),
-              const SizedBox(height: 12),
-              _buildActionCard(
-                icon: Icons.book,
-                color: Colors.blue,
-                title: 'Belajar',
-                subtitle: 'Pelajaran & latihan interaktif',
-                onTap: () {},
-              ),
-              const SizedBox(height: 24),
+                    // 5. Action Buttons (Grid/List)
+                    const Text(
+                      'Apa yang ingin anda lakukan?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildActionCard(
+                      icon: Icons.image,
+                      color: Colors.orange,
+                      title: 'Transliterasi Gambar',
+                      subtitle:
+                          'Ubah teks pegon dari foto atau gambar di galeri menjadi latin',
+                      onTap: () {},
+                    ),
+                    const SizedBox(height: 12),
+                    _buildActionCard(
+                      icon: Icons.description,
+                      color: Colors.teal,
+                      title: 'Transliterasi Teks',
+                      subtitle: 'Ubah teks latin menjadi pegon',
+                      onTap: () {},
+                    ),
+                    const SizedBox(height: 12),
+                    _buildActionCard(
+                      icon: Icons.book,
+                      color: Colors.blue,
+                      title: 'Belajar',
+                      subtitle: 'Pelajaran & latihan interaktif',
+                      onTap: () {},
+                    ),
+                    const SizedBox(height: 24),
 
-              // 6. Recent Activity List
-              _buildRecentActivitySection(_data!.imageTransliterations),
-            ],
+                    // 6. Recent Activity List
+                    _buildRecentActivitySection(_data!.imageTransliterations),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Stack(
+      children: [
+        // Base Gradient
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.amber[50]!, Colors.white, Colors.teal[50]!],
+              stops: const [0.0, 0.5, 1.0],
+            ),
           ),
         ),
-      ),
+        // Abstract Shapes
+        Positioned(
+          top: -100,
+          right: -100,
+          child: Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.amber[100]!.withOpacity(0.3),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -50,
+          left: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.teal[100]!.withOpacity(0.3),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -205,15 +259,15 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildProgressCard(User user) {
-    // Calculate progress (e.g. 8/30)
-    double progress = user.learningStageLevel / 30.0;
-
+  Widget _buildAbstractCard({
+    required Widget child,
+    required Gradient gradient,
+    EdgeInsetsGeometry padding = const EdgeInsets.all(20),
+  }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF00ACC1), // Keep simple solid teal for now
+        gradient: gradient,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -222,6 +276,52 @@ class _DashboardPageState extends State<DashboardPage> {
             offset: const Offset(0, 5),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          children: [
+            // Abstract Motifs (Circles)
+            Positioned(
+              right: -30,
+              top: -30,
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Positioned(
+              left: -20,
+              bottom: -40,
+              child: Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Padding(padding: padding, child: child),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressCard(User user) {
+    // Calculate progress (e.g. 8/30)
+    double progress = user.learningStageLevel / 30.0;
+
+    return _buildAbstractCard(
+      gradient: LinearGradient(
+        colors: [Colors.cyan[600]!, Colors.teal[400]!],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,13 +409,8 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildUpgradeCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Colors.orange, Colors.green]),
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return _buildAbstractCard(
+      gradient: const LinearGradient(colors: [Colors.orange, Colors.green]),
       child: Row(
         children: [
           Container(
@@ -357,16 +452,11 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildPremiumCard(User user) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.yellow[700]!, Colors.amber[300]!], // Yellow gradient
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
+    return _buildAbstractCard(
+      gradient: LinearGradient(
+        colors: [Colors.yellow[700]!, Colors.amber[300]!], // Yellow gradient
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
       child: Row(
         children: [
@@ -418,13 +508,14 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildStatItem(String label, String count, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
+  Widget _buildStatItem(String label, String count, Color baseColor) {
+    return _buildAbstractCard(
+      gradient: LinearGradient(
+        colors: [baseColor, baseColor.withOpacity(0.7)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -562,16 +653,25 @@ class _DashboardPageState extends State<DashboardPage> {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: Colors.grey[200], // Lighter background for skeleton base
               borderRadius: BorderRadius.circular(12),
-              image: item.image.isNotEmpty
-                  ? DecorationImage(
-                      image: NetworkImage(item.image),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
             ),
-            child: item.image.isEmpty ? const Icon(Icons.image) : null,
+            child: item.image.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      item.image,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        // Skeleton Effect (Animated Shimmer)
+                        return const ShimmerSkeleton(width: 60, height: 60);
+                      },
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.broken_image, color: Colors.grey),
+                    ),
+                  )
+                : const Icon(Icons.image, color: Colors.grey),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -610,5 +710,79 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+  }
+}
+
+class ShimmerSkeleton extends StatefulWidget {
+  final double width;
+  final double height;
+
+  const ShimmerSkeleton({super.key, required this.width, required this.height});
+
+  @override
+  State<ShimmerSkeleton> createState() => _ShimmerSkeletonState();
+}
+
+class _ShimmerSkeletonState extends State<ShimmerSkeleton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+    _animation = Tween<double>(begin: -2, end: 2).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: const [
+                Color(0xFFE0E0E0),
+                Color(0xFFF5F5F5),
+                Color(0xFFE0E0E0),
+              ],
+              stops: const [0.1, 0.3, 0.4],
+              transform: _SlidingGradientTransform(
+                slidePercent: _animation.value,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SlidingGradientTransform extends GradientTransform {
+  const _SlidingGradientTransform({required this.slidePercent});
+
+  final double slidePercent;
+
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(bounds.width * slidePercent, 0.0, 0.0);
   }
 }

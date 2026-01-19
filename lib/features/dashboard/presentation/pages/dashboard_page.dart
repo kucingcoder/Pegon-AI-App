@@ -98,7 +98,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         const SizedBox(width: 6),
                         const Text(
-                          'Statistikmu',
+                          'Statistik',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -271,7 +271,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   user.category,
                   style: TextStyle(
                     fontSize: 10,
-                    color: user.isPremium ? Colors.black : Colors.green[800],
+                    color: user.isPremium ? Colors.white : Colors.green[800],
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -434,7 +434,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildUpgradeCard() {
     return _buildAbstractCard(
-      gradient: const LinearGradient(colors: [Colors.orange, Colors.green]),
+      gradient: const LinearGradient(
+        colors: [Colors.red, Colors.orange, Colors.blue],
+      ),
       child: Row(
         children: [
           Container(

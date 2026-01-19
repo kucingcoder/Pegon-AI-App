@@ -7,6 +7,7 @@ import '../../../transliteration/presentation/pages/image_transliteration_result
 import '../../../transliteration/presentation/pages/image_transliteration_history_page.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../transliteration/data/image_transliteration_service.dart';
 import '../../../subscription/presentation/pages/premium_package_page.dart';
 
@@ -73,10 +74,26 @@ class _DashboardPageState extends State<DashboardPage> {
     try {
       final XFile? image = await picker.pickImage(
         source: source,
-        imageQuality: 50, // Compress to 50% quality
+        // imageQuality is removed here as we use manual compression
       );
 
       if (image == null) return;
+
+      // Compress image
+      final String targetPath =
+          '${image.path.substring(0, image.path.lastIndexOf('.'))}_compressed.jpg';
+
+      final XFile? compressedImage =
+          await FlutterImageCompress.compressAndGetFile(
+            image.path,
+            targetPath,
+            quality: 50,
+          );
+
+      if (compressedImage == null) return;
+
+      // Use compressed image path
+      final String imagePath = compressedImage.path;
 
       setState(() => _isUploading = true);
 
@@ -91,7 +108,7 @@ class _DashboardPageState extends State<DashboardPage> {
       }
 
       final String historyId = await _transliterationService.uploadImage(
-        image.path,
+        imagePath,
       );
 
       if (mounted) {

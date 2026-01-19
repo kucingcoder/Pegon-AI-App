@@ -6,6 +6,9 @@ import '../../../transliteration/presentation/pages/text_transliteration_page.da
 import '../../../transliteration/presentation/pages/image_transliteration_result_page.dart';
 import '../../../transliteration/presentation/pages/image_transliteration_history_page.dart';
 
+import 'package:image_picker/image_picker.dart';
+import '../../../transliteration/data/image_transliteration_service.dart';
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -31,6 +34,88 @@ class _DashboardPageState extends State<DashboardPage> {
         _data = data;
         _isLoading = false;
       });
+    }
+  }
+
+  bool _isUploading = false;
+  final ImageTransliterationService _transliterationService =
+      ImageTransliterationService();
+
+  Future<void> _pickAndUploadImage() async {
+    final ImagePicker picker = ImagePicker();
+
+    // Show option dialog
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Pilih Sumber Gambar'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Kamera'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Galeri'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (source == null) return;
+
+    try {
+      final XFile? image = await picker.pickImage(
+        source: source,
+        imageQuality: 50, // Compress to 50% quality
+      );
+
+      if (image == null) return;
+
+      setState(() => _isUploading = true);
+
+      // Show loading dialog
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) =>
+              const Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      final String historyId = await _transliterationService.uploadImage(
+        image.path,
+      );
+
+      if (mounted) {
+        // Close loading dialog
+        Navigator.pop(context);
+        setState(() => _isUploading = false);
+
+        // Navigate to result page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageTransliterationResultPage(id: historyId),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        // Close loading dialog if open
+        if (_isUploading) Navigator.pop(context);
+        setState(() => _isUploading = false);
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     }
   }
 
@@ -131,7 +216,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       title: 'Transliterasi Gambar',
                       subtitle:
                           'Ubah teks pegon dari foto atau gambar di galeri menjadi latin',
-                      onTap: () {},
+                      onTap: _pickAndUploadImage,
                     ),
                     const SizedBox(height: 12),
                     _buildActionCard(

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ImageTransliterationService {
   final String _baseUrl = 'https://rust.pegon.ai';
@@ -8,6 +10,43 @@ class ImageTransliterationService {
   Future<String?> _getSession() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('session');
+  }
+
+  Future<String> uploadImage(String filePath) async {
+    final session = await _getSession();
+    final headers = {if (session != null) 'Cookie': session};
+
+    final uri = Uri.parse('$_baseUrl/api/transliteration/image');
+    var request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(headers);
+
+    final mimeType = lookupMimeType(filePath);
+    MediaType? contentType;
+    if (mimeType != null) {
+      contentType = MediaType.parse(mimeType);
+    }
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'image',
+        filePath,
+        contentType: contentType,
+      ),
+    );
+
+    try {
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['history']; // Returns history ID
+      } else {
+        throw 'Failed to upload image: ${response.statusCode} - ${response.body}';
+      }
+    } catch (e) {
+      throw 'Error uploading image: $e';
+    }
   }
 
   Future<Map<String, dynamic>> getHistory({int page = 1}) async {

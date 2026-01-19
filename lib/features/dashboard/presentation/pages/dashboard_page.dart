@@ -8,6 +8,7 @@ import '../../../transliteration/presentation/pages/image_transliteration_histor
 
 import 'package:image_picker/image_picker.dart';
 import '../../../transliteration/data/image_transliteration_service.dart';
+import '../../../subscription/presentation/pages/premium_package_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -524,41 +525,50 @@ class _DashboardPageState extends State<DashboardPage> {
       gradient: const LinearGradient(
         colors: [Colors.red, Colors.orange, Colors.blue],
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PremiumPackagePage()),
+          );
+        },
+        borderRadius: BorderRadius.circular(20),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.workspace_premium,
+                color: Colors.white,
+                size: 30,
+              ),
             ),
-            child: const Icon(
-              Icons.workspace_premium,
-              color: Colors.white,
-              size: 30,
-            ),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Upgrade ke Premium',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+            const SizedBox(width: 16),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Upgrade ke Premium',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(
-                  'Buka semua fitur eksklusif!',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-              ],
+                  Text(
+                    'Buka semua fitur eksklusif!',
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     // Note: "hanya muncul jika user standard" - Logic handled in build()

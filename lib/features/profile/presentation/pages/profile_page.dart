@@ -4,6 +4,7 @@ import '../../data/profile_service.dart';
 import '../../../auth/presentation/pages/login_page.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import '../../../subscription/presentation/pages/transaction_history_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -246,7 +247,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     icon: Icons.receipt_long,
                     title: 'Riwayat Transaksi',
                     subtitle: 'Lihat semua transaksi',
-                    onTap: () {}, // Navigate to history
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TransactionHistoryPage(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 40),
 

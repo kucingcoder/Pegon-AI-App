@@ -50,7 +50,9 @@ class _PaymentPageState extends State<PaymentPage> {
 
   void _startTimer() {
     if (_transactionInfo == null) return;
-    final expiredAt = DateTime.parse(_transactionInfo!['expired_at']).toLocal();
+    final expiredAt = DateTime.parse(
+      _transactionInfo!['expired_at'],
+    ).toLocal().add(const Duration(minutes: 1));
     final now = DateTime.now();
 
     if (expiredAt.isAfter(now)) {
@@ -62,7 +64,8 @@ class _PaymentPageState extends State<PaymentPage> {
               _timeLeft = _timeLeft - const Duration(seconds: 1);
             } else {
               _timer?.cancel();
-              // Refresh status or show expired
+              // Check final status and refresh info
+              _checkStatus();
               _loadTransactionInfo();
             }
           });

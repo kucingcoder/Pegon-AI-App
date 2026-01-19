@@ -4,6 +4,7 @@ import '../../data/profile_service.dart';
 import '../../../auth/presentation/pages/login_page.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../subscription/presentation/pages/transaction_history_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,9 +30,21 @@ class _ProfilePageState extends State<ProfilePage> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      setState(() {
-        _photoProfile = image.path;
-      });
+      final String targetPath =
+          '${image.path.substring(0, image.path.lastIndexOf('.'))}_compressed.jpg';
+
+      final XFile? compressedImage =
+          await FlutterImageCompress.compressAndGetFile(
+            image.path,
+            targetPath,
+            quality: 50,
+          );
+
+      if (compressedImage != null) {
+        setState(() {
+          _photoProfile = compressedImage.path;
+        });
+      }
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/dashboard_service.dart';
 import '../../data/models/dashboard_model.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../transliteration/presentation/pages/text_transliteration_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -136,7 +137,15 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: Colors.teal,
                       title: 'Transliterasi Teks',
                       subtitle: 'Ubah teks latin menjadi pegon',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const TextTransliterationPage(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
                     _buildActionCard(

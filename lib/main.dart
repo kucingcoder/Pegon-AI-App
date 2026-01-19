@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pegon AI',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFFD700)),
         useMaterial3: true,
       ),
       home: isLoggedIn ? const DashboardPage() : const LoginPage(),

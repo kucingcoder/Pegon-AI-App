@@ -254,21 +254,45 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child: ElevatedButton.icon(
-                      onPressed: _updateProfile,
-                      icon: const Icon(Icons.save, color: Colors.white),
-                      label: const Text(
-                        'Simpan Perubahan',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              disabledBackgroundColor: Colors.teal.withOpacity(
+                                0.6,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            ),
+                          )
+                        : ElevatedButton.icon(
+                            onPressed: _updateProfile,
+                            icon: const Icon(Icons.save, color: Colors.white),
+                            label: const Text(
+                              'Simpan Perubahan',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 16),
 

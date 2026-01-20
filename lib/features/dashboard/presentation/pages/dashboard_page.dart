@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../transliteration/data/image_transliteration_service.dart';
 import '../../../subscription/presentation/pages/premium_package_page.dart';
+import '../../../learning/presentation/pages/level_list_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -258,7 +259,14 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: Colors.blue,
                       title: 'Belajar',
                       subtitle: 'Pelajaran & latihan interaktif',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LevelListPage(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
 

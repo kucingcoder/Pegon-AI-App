@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:app/features/auth/data/auth_service.dart';
 import 'package:app/features/dashboard/presentation/pages/dashboard_page.dart';
 
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   final isLoggedIn = await AuthService().isLoggedIn();
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }

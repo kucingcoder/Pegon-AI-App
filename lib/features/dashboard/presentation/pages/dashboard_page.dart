@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../transliteration/data/image_transliteration_service.dart';
 import '../../../subscription/presentation/pages/premium_package_page.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../learning/presentation/pages/level_list_page.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -43,6 +44,37 @@ class _DashboardPageState extends State<DashboardPage> {
   bool _isUploading = false;
   final ImageTransliterationService _transliterationService =
       ImageTransliterationService();
+
+  BannerAd? _bannerAd;
+  bool _isBannerAdReady = false;
+
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-1144248073011584/6668460405',
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd?.load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickAndUploadImage() async {
     final ImagePicker picker = ImagePicker();
@@ -168,113 +200,133 @@ class _DashboardPageState extends State<DashboardPage> {
 
     final user = _data!.user;
 
+    // Load ad if not premium and not ready
+    if (!user.isPremium && _bannerAd == null) {
+      _loadBannerAd();
+    }
+
     return Scaffold(
       body: Stack(
         children: [
           _buildBackground(),
           SafeArea(
-            child: RefreshIndicator(
-              onRefresh: _loadData,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 1. Header (Profile)
-                    _buildHeader(user),
-                    const SizedBox(height: 20),
+            child: Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: _loadData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 1. Header (Profile)
+                          _buildHeader(user),
+                          const SizedBox(height: 20),
 
-                    // 2. Progress Card
-                    _buildProgressCard(user),
-                    const SizedBox(height: 20),
+                          // 2. Progress Card
+                          _buildProgressCard(user),
+                          const SizedBox(height: 20),
 
-                    // 3. Premium/Upgrade Card
-                    if (!user.isPremium) _buildUpgradeCard(),
-                    if (user.isPremium) _buildPremiumCard(user),
-                    const SizedBox(height: 20),
+                          // 3. Premium/Upgrade Card
+                          if (!user.isPremium) _buildUpgradeCard(),
+                          if (user.isPremium) _buildPremiumCard(user),
+                          const SizedBox(height: 20),
 
-                    // 4. Statistics Section
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/images/icon_statistic.png',
-                          width: 16,
-                          height: 16,
-                        ),
-                        const SizedBox(width: 6),
-                        const Text(
-                          'Statistik',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                          // 4. Statistics Section
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/icon_statistic.png',
+                                width: 16,
+                                height: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              const Text(
+                                'Statistik',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _buildStatistics(
-                      imageCount: _data!.imageTransliterationCount,
-                      textCount: _data!.textTransliterationCount,
-                    ),
-                    const SizedBox(height: 24),
+                          const SizedBox(height: 12),
+                          _buildStatistics(
+                            imageCount: _data!.imageTransliterationCount,
+                            textCount: _data!.textTransliterationCount,
+                          ),
+                          const SizedBox(height: 24),
 
-                    // 5. Action Buttons (Grid/List)
-                    const Text(
-                      'Apa yang ingin anda lakukan?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                          // 5. Action Buttons (Grid/List)
+                          const Text(
+                            'Apa yang ingin anda lakukan?',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildActionCard(
+                            icon: Icons.image,
+                            color: Colors.orange,
+                            title: 'Transliterasi Gambar',
+                            subtitle:
+                                'Ubah teks pegon dari foto atau gambar di galeri menjadi latin',
+                            onTap: _pickAndUploadImage,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildActionCard(
+                            icon: Icons.description,
+                            color: Colors.teal,
+                            title: 'Transliterasi Teks',
+                            subtitle: 'Ubah teks latin menjadi pegon',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TextTransliterationPage(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildActionCard(
+                            icon: Icons.book,
+                            color: Colors.blue,
+                            title: 'Belajar',
+                            subtitle: 'Pelajaran & latihan interaktif',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LevelListPage(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 24),
+
+                          // 6. Recent Activity List
+                          _buildRecentActivitySection(
+                            _data!.imageTransliterations,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    _buildActionCard(
-                      icon: Icons.image,
-                      color: Colors.orange,
-                      title: 'Transliterasi Gambar',
-                      subtitle:
-                          'Ubah teks pegon dari foto atau gambar di galeri menjadi latin',
-                      onTap: _pickAndUploadImage,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildActionCard(
-                      icon: Icons.description,
-                      color: Colors.teal,
-                      title: 'Transliterasi Teks',
-                      subtitle: 'Ubah teks latin menjadi pegon',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const TextTransliterationPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildActionCard(
-                      icon: Icons.book,
-                      color: Colors.blue,
-                      title: 'Belajar',
-                      subtitle: 'Pelajaran & latihan interaktif',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LevelListPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-
-                    // 6. Recent Activity List
-                    _buildRecentActivitySection(_data!.imageTransliterations),
-                  ],
+                  ),
                 ),
-              ),
+                if (!user.isPremium && _isBannerAdReady && _bannerAd != null)
+                  Container(
+                    alignment: Alignment.center,
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  ),
+              ],
             ),
           ),
         ],

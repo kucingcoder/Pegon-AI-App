@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../data/models/profile_model.dart';
 import '../../data/profile_service.dart';
 import '../../../auth/presentation/pages/login_page.dart';
@@ -209,6 +210,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   _buildPhotoSection(),
                   const SizedBox(height: 20),
 
+                  // Add-in Code
+                  _buildAddInCodeSection(),
+                  const SizedBox(height: 20),
+
                   // Name
                   _buildLabel('Nama Lengkap'),
                   _buildTextField(
@@ -349,6 +354,54 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _buildAddInCodeSection() {
+    if (_profileData?.addInCode == null || _profileData!.addInCode.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.teal.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.teal.withOpacity(0.2)),
+        ),
+        child: InkWell(
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: _profileData!.addInCode));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Add-in Code disalin!'),
+                backgroundColor: Colors.teal,
+                duration: Duration(seconds: 1),
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.qr_code, size: 20, color: Colors.teal),
+              const SizedBox(width: 8),
+              SelectableText(
+                _profileData!.addInCode,
+                style: const TextStyle(
+                  color: Colors.teal,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.copy, size: 18, color: Colors.teal),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildPhotoSection() {
     ImageProvider? imageProvider;
     if (_photoProfile != null && _photoProfile!.isNotEmpty) {
@@ -418,11 +471,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Ubah Foto',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
         ),

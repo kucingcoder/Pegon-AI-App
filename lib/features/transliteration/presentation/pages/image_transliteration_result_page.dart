@@ -222,30 +222,39 @@ class _ImageTransliterationResultPageState
                                   ],
                                 ),
                                 padding: const EdgeInsets.all(12),
-                                child: ClipRRect(
+                                child: InkWell(
+                                  onTap: () {
+                                    if (_image != null) {
+                                      _showFullScreenImage(context, _image!);
+                                    }
+                                  },
                                   borderRadius: BorderRadius.circular(12),
-                                  child: _image != null
-                                      ? Image.network(
-                                          _image!,
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (_, __, ___) =>
-                                              const SizedBox(
-                                                height: 200,
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.broken_image,
-                                                    size: 50,
-                                                    color: Colors.grey,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: AspectRatio(
+                                      aspectRatio: 1.0,
+                                      child: _image != null
+                                          ? Image.network(
+                                              _image!,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) =>
+                                                  const SizedBox(
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.broken_image,
+                                                        size: 50,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                            )
+                                          : const SizedBox(
+                                              child: Center(
+                                                child: Text("No Image"),
                                               ),
-                                        )
-                                      : const SizedBox(
-                                          height: 200,
-                                          child: Center(
-                                            child: Text("No Image"),
-                                          ),
-                                        ),
+                                            ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 20),
@@ -546,6 +555,43 @@ class _ImageTransliterationResultPageState
           ),
         ),
       ],
+    );
+  }
+
+  void _showFullScreenImage(BuildContext context, String imageUrl) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: const IconThemeData(color: Colors.white),
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          body: Center(
+            child: InteractiveViewer(
+              panEnabled: true,
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Center(
+                  child: Icon(
+                    Icons.broken_image,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

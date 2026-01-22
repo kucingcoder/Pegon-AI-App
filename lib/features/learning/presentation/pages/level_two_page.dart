@@ -63,6 +63,7 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Silakan ucapkan jawaban terlebih dahulu'),
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -79,14 +80,18 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
       setState(() => _isChecking = false);
 
       if (result != null && result.success) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Jawaban Benar!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Jawaban Benar!'),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result?.message ?? 'Jawaban Salah, coba lagi'),
+            backgroundColor: Colors.red,
           ),
         );
       }

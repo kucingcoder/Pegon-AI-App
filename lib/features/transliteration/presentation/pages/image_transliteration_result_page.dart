@@ -117,9 +117,9 @@ class _ImageTransliterationResultPageState
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
         setState(() => _isLoading = false);
       }
     }
@@ -140,14 +140,20 @@ class _ImageTransliterationResultPageState
       await _service.updateTitle(widget.id, _titleController.text);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Judul berhasil disimpan')),
+          const SnackBar(
+            content: Text('Judul berhasil disimpan'),
+            backgroundColor: Colors.green,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Gagal menyimpan judul: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menyimpan judul: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isSavingTitle = false);
@@ -421,6 +427,7 @@ class _ImageTransliterationResultPageState
                                                   content: Text(
                                                     'Teks disalin!',
                                                   ),
+                                                  backgroundColor: Colors.blue,
                                                 ),
                                               );
                                             }

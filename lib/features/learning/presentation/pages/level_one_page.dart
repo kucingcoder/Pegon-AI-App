@@ -29,9 +29,12 @@ class _LevelOnePageState extends State<LevelOnePage> {
         Navigator.pop(context, true);
       } else {
         // Show error
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Gagal update level')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal update level'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }

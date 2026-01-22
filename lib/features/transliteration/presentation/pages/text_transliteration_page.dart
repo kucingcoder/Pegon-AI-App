@@ -39,9 +39,12 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Gagal: ${e.toString()}')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } finally {
       if (mounted) {
@@ -53,9 +56,12 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
   void _copyToClipboard() {
     if (_result.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: _result));
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Teks berhasil disalin')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Teks berhasil disalin'),
+          backgroundColor: Colors.blue,
+        ),
+      );
     }
   }
 

@@ -164,9 +164,9 @@ class _DashboardPageState extends State<DashboardPage> {
         if (_isUploading) Navigator.pop(context);
         setState(() => _isUploading = false);
 
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
       }
     }
   }

@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage>
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Gagal masuk, coba lagi'),
-                              backgroundColor: Colors.redAccent,
+                              backgroundColor: Colors.red,
                             ),
                           );
                         }

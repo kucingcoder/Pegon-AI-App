@@ -47,7 +47,10 @@ class _LevelThreePageState extends State<LevelThreePage> {
   Future<void> _checkAnswer() async {
     if (_image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Silakan ambil foto terlebih dahulu')),
+        const SnackBar(
+          content: Text('Silakan ambil foto terlebih dahulu'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
@@ -62,14 +65,18 @@ class _LevelThreePageState extends State<LevelThreePage> {
       setState(() => _isChecking = false);
 
       if (result != null && result.success) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Jawaban Benar!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Jawaban Benar!'),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result?.message ?? 'Jawaban Salah, coba lagi'),
+            backgroundColor: Colors.red,
           ),
         );
       }

@@ -3,6 +3,7 @@ import '../../data/image_transliteration_service.dart';
 import '../../presentation/pages/image_transliteration_result_page.dart';
 import '../../../dashboard/data/models/dashboard_model.dart';
 import 'dart:async';
+import '../../../../core/presentation/widgets/app_image.dart';
 
 class ImageTransliterationHistoryPage extends StatefulWidget {
   const ImageTransliterationHistoryPage({super.key});
@@ -133,17 +134,10 @@ class _ImageTransliterationHistoryPageState
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: item.image.isNotEmpty
-                    ? ClipRRect(
+                    ? AppImage(
+                        imageUrl: item.image,
+                        fit: BoxFit.cover,
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          item.image,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                                Icons.broken_image,
-                                color: Colors.grey,
-                              ),
-                        ),
                       )
                     : const Icon(Icons.image, color: Colors.grey),
               ),

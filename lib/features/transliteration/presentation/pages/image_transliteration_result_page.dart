@@ -4,6 +4,7 @@ import '../../data/image_transliteration_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import '../../../dashboard/data/models/dashboard_model.dart';
+import '../../../../core/presentation/widgets/app_image.dart';
 
 class ImageTransliterationResultPage extends StatefulWidget {
   final String id;
@@ -234,19 +235,9 @@ class _ImageTransliterationResultPageState
                                     child: AspectRatio(
                                       aspectRatio: 1.0,
                                       child: _image != null
-                                          ? Image.network(
-                                              _image!,
+                                          ? AppImage(
+                                              imageUrl: _image!,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) =>
-                                                  const SizedBox(
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.broken_image,
-                                                        size: 50,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ),
                                             )
                                           : const SizedBox(
                                               child: Center(
@@ -577,17 +568,8 @@ class _ImageTransliterationResultPageState
               panEnabled: true,
               minScale: 0.5,
               maxScale: 4.0,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Center(
-                  child: Icon(
-                    Icons.broken_image,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                ),
-              ),
+
+              child: AppImage(imageUrl: imageUrl, fit: BoxFit.contain),
             ),
           ),
         ),

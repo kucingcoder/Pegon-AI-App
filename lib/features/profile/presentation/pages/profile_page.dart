@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../subscription/presentation/pages/transaction_history_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/presentation/widgets/app_image.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -403,16 +404,40 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildPhotoSection() {
-    ImageProvider? imageProvider;
+    Widget imageWidget;
+    bool isNetwork = false;
+    String? networkUrl;
+    File? localFile;
+
     if (_photoProfile != null && _photoProfile!.isNotEmpty) {
       if (_photoProfile!.startsWith('http')) {
-        imageProvider = NetworkImage(_photoProfile!);
+        isNetwork = true;
+        networkUrl = _photoProfile;
       } else {
-        imageProvider = FileImage(File(_photoProfile!));
+        localFile = File(_photoProfile!);
       }
     } else if (_profileData?.photoProfile != null &&
         _profileData!.photoProfile.isNotEmpty) {
-      imageProvider = NetworkImage(_profileData!.photoProfile);
+      isNetwork = true;
+      networkUrl = _profileData!.photoProfile;
+    }
+
+    if (localFile != null) {
+      imageWidget = Image.file(
+        localFile,
+        fit: BoxFit.cover,
+        width: 100,
+        height: 100,
+      );
+    } else if (isNetwork && networkUrl != null) {
+      imageWidget = AppImage(
+        imageUrl: networkUrl,
+        fit: BoxFit.cover,
+        width: 100,
+        height: 100,
+      );
+    } else {
+      imageWidget = const Icon(Icons.person, size: 50, color: Colors.grey);
     }
 
     return GestureDetector(
@@ -443,16 +468,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.teal.withOpacity(0.2),
                       width: 4,
                     ),
-                    image: imageProvider != null
-                        ? DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          )
-                        : null,
                   ),
-                  child: imageProvider == null
-                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                      : null,
+                  child: ClipOval(child: imageWidget),
                 ),
                 Positioned(
                   bottom: 0,

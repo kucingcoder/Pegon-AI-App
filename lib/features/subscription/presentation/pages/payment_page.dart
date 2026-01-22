@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../data/transaction_service.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
+import '../../../../core/presentation/widgets/app_image.dart';
 
 class PaymentPage extends StatefulWidget {
   final String transactionId;
@@ -311,22 +312,9 @@ class _PaymentPageState extends State<PaymentPage> {
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Image.network(
-                        _transactionInfo!['qr_code'],
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) =>
-                            const SizedBox(
-                              height: 200,
-                              width: 200,
-                              child: Center(child: Text("Failed to load QR")),
-                            ),
+                      child: AppImage(
+                        imageUrl: _transactionInfo!['qr_code'],
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ],

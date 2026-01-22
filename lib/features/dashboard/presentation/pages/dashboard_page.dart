@@ -12,6 +12,7 @@ import '../../../transliteration/data/image_transliteration_service.dart';
 import '../../../subscription/presentation/pages/premium_package_page.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../learning/presentation/pages/level_list_page.dart';
+import '../../../../core/presentation/widgets/app_image.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -403,16 +404,14 @@ class _DashboardPageState extends State<DashboardPage> {
                   offset: const Offset(0, 4),
                 ),
               ],
-              image: user.photoProfile.isNotEmpty
-                  ? DecorationImage(
-                      image: NetworkImage(user.photoProfile),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
             ),
-            child: user.photoProfile.isEmpty
-                ? const Icon(Icons.person, color: Colors.white)
-                : null,
+            child: user.photoProfile.isNotEmpty
+                ? AppImage(
+                    imageUrl: user.photoProfile,
+                    fit: BoxFit.cover,
+                    borderRadius: BorderRadius.circular(12),
+                  )
+                : const Icon(Icons.person, color: Colors.grey),
           ),
           const SizedBox(width: 12),
           Column(
@@ -883,22 +882,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: item.image.isNotEmpty
-                    ? ClipRRect(
+                    ? AppImage(
+                        imageUrl: item.image,
+                        fit: BoxFit.cover,
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          item.image,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            // Skeleton Effect (Animated Shimmer)
-                            return const ShimmerSkeleton(width: 60, height: 60);
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                                Icons.broken_image,
-                                color: Colors.grey,
-                              ),
-                        ),
                       )
                     : const Icon(Icons.image, color: Colors.grey),
               ),
@@ -944,79 +931,5 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       ),
     );
-  }
-}
-
-class ShimmerSkeleton extends StatefulWidget {
-  final double width;
-  final double height;
-
-  const ShimmerSkeleton({super.key, required this.width, required this.height});
-
-  @override
-  State<ShimmerSkeleton> createState() => _ShimmerSkeletonState();
-}
-
-class _ShimmerSkeletonState extends State<ShimmerSkeleton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat();
-    _animation = Tween<double>(begin: -2, end: 2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          width: widget.width,
-          height: widget.height,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: const [
-                Color(0xFFE0E0E0),
-                Color(0xFFF5F5F5),
-                Color(0xFFE0E0E0),
-              ],
-              stops: const [0.1, 0.3, 0.4],
-              transform: _SlidingGradientTransform(
-                slidePercent: _animation.value,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _SlidingGradientTransform extends GradientTransform {
-  const _SlidingGradientTransform({required this.slidePercent});
-
-  final double slidePercent;
-
-  @override
-  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
-    return Matrix4.translationValues(bounds.width * slidePercent, 0.0, 0.0);
   }
 }

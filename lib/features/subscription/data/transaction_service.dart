@@ -33,6 +33,11 @@ class TransactionService {
         throw 'Failed to initiate transaction: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error: $e';
     }
   }
@@ -56,6 +61,11 @@ class TransactionService {
         throw 'Failed to load transaction info: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error: $e';
     }
   }
@@ -80,6 +90,11 @@ class TransactionService {
         throw 'Failed to load status: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error: $e';
     }
   }
@@ -103,6 +118,11 @@ class TransactionService {
         throw 'Failed to load history: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error: $e';
     }
   }

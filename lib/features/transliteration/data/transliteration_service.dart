@@ -38,6 +38,11 @@ class TransliterationService {
         throw 'Failed to transliterate: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       if (e is String) rethrow;
       throw Exception('Error: $e');
     }

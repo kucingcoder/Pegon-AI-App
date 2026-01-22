@@ -45,6 +45,11 @@ class ImageTransliterationService {
         throw 'Failed to upload image: ${response.statusCode} - ${response.body}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error uploading image: $e';
     }
   }
@@ -68,6 +73,11 @@ class ImageTransliterationService {
         throw 'Failed to load history: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error: $e';
     }
   }
@@ -115,6 +125,11 @@ class ImageTransliterationService {
         throw 'Failed to update title: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error updating title: $e';
     }
   }

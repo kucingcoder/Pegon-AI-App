@@ -13,7 +13,7 @@ class TransactionHistoryPage extends StatefulWidget {
 class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   final TransactionService _service = TransactionService();
   final ScrollController _scrollController = ScrollController();
-  List<dynamic> _history = [];
+  final List<dynamic> _history = [];
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;

@@ -17,14 +17,11 @@ class AuthService {
         );
         _isInitialized = true;
       }
-      final GoogleSignInAccount? googleUser = await _googleSignIn
+      final GoogleSignInAccount googleUser = await _googleSignIn
           .authenticate();
-      if (googleUser == null) {
-        return false; // User canceled
-      }
 
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+          googleUser.authentication;
       final String? idToken = googleAuth.idToken;
 
       if (idToken == null) {

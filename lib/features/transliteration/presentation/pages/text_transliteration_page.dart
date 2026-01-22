@@ -246,7 +246,7 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
                           value: _includeHarakat,
                           onChanged: (value) =>
                               setState(() => _includeHarakat = value),
-                          activeColor: Colors.teal,
+                          activeThumbColor: Colors.teal,
                         ),
                       ],
                     ),

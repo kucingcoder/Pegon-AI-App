@@ -18,7 +18,7 @@ class _ImageTransliterationHistoryPageState
   final ImageTransliterationService _service = ImageTransliterationService();
   final ScrollController _scrollController = ScrollController();
 
-  List<ImageTransliteration> _items = [];
+  final List<ImageTransliteration> _items = [];
   bool _isLoading = false;
   bool _hasMore = true;
   int _currentPage = 1;

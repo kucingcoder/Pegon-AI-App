@@ -126,6 +126,15 @@ class _ImageTransliterationResultPageState
   }
 
   Future<void> _saveTitle() async {
+    if (_titleController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Judul tidak boleh kosong!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
     setState(() => _isSavingTitle = true);
     try {
       await _service.updateTitle(widget.id, _titleController.text);

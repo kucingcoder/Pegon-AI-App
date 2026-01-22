@@ -18,7 +18,15 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
   String _result = '';
 
   Future<void> _transliterate() async {
-    if (_textController.text.isEmpty) return;
+    if (_textController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Teks tidak boleh kosong!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
     try {

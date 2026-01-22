@@ -89,6 +89,19 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _updateProfile() async {
+    if (_nameController.text.trim().isEmpty ||
+        _dobController.text.trim().isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Semua kolom harus diisi!'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     // Convert DD/MM/YYYY back to YYYY-MM-DD for API

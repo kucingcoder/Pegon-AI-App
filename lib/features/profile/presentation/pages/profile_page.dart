@@ -80,9 +80,9 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Gagal memuat profil')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+        );
         setState(() => _isLoading = false);
       }
     }
@@ -108,24 +108,20 @@ class _ProfilePageState extends State<ProfilePage> {
     };
 
     try {
-      final success = await _service.updateProfile(data);
+      await _service.updateProfile(data);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success
-                  ? 'Berhasil memperbaharui'
-                  : 'Gagal memperbaharui, coba lagi!',
-            ),
-            backgroundColor: success ? Colors.green : Colors.red,
+          const SnackBar(
+            content: Text('Berhasil memperbaharui'),
+            backgroundColor: Colors.green,
           ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal memperbaharui, coba lagi!'),
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: Colors.red,
           ),
         );

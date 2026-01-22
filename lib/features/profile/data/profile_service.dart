@@ -26,8 +26,7 @@ class ProfileService {
     if (response.statusCode == 200) {
       return ProfileData.fromJson(jsonDecode(response.body));
     } else {
-      print(response.body);
-      throw Exception('Failed to load profile');
+      throw Exception(response.body);
     }
   }
 
@@ -74,10 +73,10 @@ class ProfileService {
     final response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode != 200) {
-      print('Update failed: ${response.statusCode} - ${response.body}');
+      throw Exception(response.body);
     }
 
-    return response.statusCode == 200;
+    return true;
   }
 
   Future<void> logout() async {

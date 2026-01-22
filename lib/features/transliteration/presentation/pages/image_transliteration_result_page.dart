@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import '../../../dashboard/data/models/dashboard_model.dart';
 import '../../../../core/presentation/widgets/app_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ImageTransliterationResultPage extends StatefulWidget {
   final String id;
@@ -218,7 +219,65 @@ class _ImageTransliterationResultPageState
               children: [
                 Expanded(
                   child: _isLoading && _image == null
-                      ? const Center(child: CircularProgressIndicator())
+                      ? Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Image Skeleton
+                              Shimmer.fromColors(
+                                baseColor: Colors.amber[200]!.withOpacity(0.5),
+                                highlightColor: Colors.teal[200]!,
+                                child: Container(
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              // Title Skeleton
+                              Shimmer.fromColors(
+                                baseColor: Colors.amber[200]!.withOpacity(0.5),
+                                highlightColor: Colors.teal[200]!,
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Date Skeleton
+                              Shimmer.fromColors(
+                                baseColor: Colors.amber[200]!.withOpacity(0.5),
+                                highlightColor: Colors.teal[200]!,
+                                child: Container(
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              // Result Skeleton
+                              Shimmer.fromColors(
+                                baseColor: Colors.amber[200]!.withOpacity(0.5),
+                                highlightColor: Colors.teal[200]!,
+                                child: Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       : SingleChildScrollView(
                           padding: const EdgeInsets.all(16),
                           child: Column(

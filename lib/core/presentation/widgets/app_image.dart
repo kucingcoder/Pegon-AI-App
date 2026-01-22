@@ -28,8 +28,8 @@ class AppImage extends StatelessWidget {
         height: height,
         fit: fit,
         placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: Colors.amber[200]!.withOpacity(0.5),
+          highlightColor: Colors.teal[200]!,
           child: Container(width: width, height: height, color: Colors.white),
         ),
         errorWidget: (context, url, error) => Container(

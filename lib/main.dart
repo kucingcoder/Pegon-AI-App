@@ -11,6 +11,84 @@ void main() async {
   MobileAds.instance.initialize();
   final isLoggedIn = await AuthService().isLoggedIn();
   runApp(MyApp(isLoggedIn: isLoggedIn));
+
+  final appOpenAdManager = AppOpenAdManager();
+  appOpenAdManager.loadAd();
+  WidgetsBinding.instance.addObserver(AppLifecycleReactor(appOpenAdManager));
+}
+
+class AppLifecycleReactor extends WidgetsBindingObserver {
+  final AppOpenAdManager appOpenAdManager;
+
+  AppLifecycleReactor(this.appOpenAdManager);
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      appOpenAdManager.showAdIfAvailable();
+    }
+  }
+}
+
+class AppOpenAdManager {
+  AppOpenAd? _appOpenAd;
+  bool _isShowingAd = false;
+  final Duration maxCacheDuration = const Duration(hours: 4);
+  DateTime? _appOpenLoadTime;
+
+  /// Load an AppOpenAd.
+  void loadAd() {
+    AppOpenAd.load(
+      adUnitId: 'ca-app-pub-1144248073011584/7912007279',
+      request: const AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+        onAdLoaded: (ad) {
+          _appOpenLoadTime = DateTime.now();
+          _appOpenAd = ad;
+          // Do NOT show immediately upon load to prevent loops.
+          // Wait for AppLifecycleReactor to trigger showAdIfAvailable.
+        },
+        onAdFailedToLoad: (error) {
+          print('AppOpenAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  /// Shows the ad if one is available and passes premium check.
+  void showAdIfAvailable() {
+    if (!isAdAvailable || _isShowingAd) {
+      loadAd();
+      return;
+    }
+
+    if (_appOpenAd != null) {
+      _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdShowedFullScreenContent: (ad) {
+          _isShowingAd = true;
+        },
+        onAdDismissedFullScreenContent: (ad) {
+          _isShowingAd = false;
+          ad.dispose();
+          _appOpenAd = null;
+          loadAd(); // Pre-load the next ad
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          _isShowingAd = false;
+          ad.dispose();
+          _appOpenAd = null;
+          loadAd();
+        },
+      );
+      _appOpenAd!.show();
+    }
+  }
+
+  bool get isAdAvailable {
+    return _appOpenAd != null &&
+        _appOpenLoadTime != null &&
+        DateTime.now().difference(_appOpenLoadTime!) < maxCacheDuration;
+  }
 }
 
 class MyApp extends StatelessWidget {

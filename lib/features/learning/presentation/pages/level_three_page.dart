@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../data/learning_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import '../../../dashboard/data/dashboard_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LevelThreePage extends StatefulWidget {
   const LevelThreePage({super.key});
@@ -15,6 +17,75 @@ class _LevelThreePageState extends State<LevelThreePage> {
   final LearningService _service = LearningService();
   File? _image;
   bool _isChecking = false;
+
+  // Ads
+  BannerAd? _bannerAd;
+  bool _isBannerReady = false;
+  InterstitialAd? _interstitialAd;
+  bool _isPremium = true;
+  final DashboardService _dashboardService = DashboardService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPremiumAndLoadAds();
+  }
+
+  Future<void> _checkPremiumAndLoadAds() async {
+    final data = await _dashboardService.getDashboardData();
+    if (data != null && mounted) {
+      setState(() {
+        _isPremium = data.user.isPremium;
+      });
+
+      if (!_isPremium) {
+        _loadBannerAd();
+        _loadInterstitialAd();
+      }
+    }
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-1144248073011584/6668460405',
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+          _isBannerReady = false;
+        },
+      ),
+    );
+    _bannerAd?.load();
+  }
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: 'ca-app-pub-1144248073011584/9193299357',
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (error) {
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -61,25 +132,49 @@ class _LevelThreePageState extends State<LevelThreePage> {
 
     const real = "selamat pagi";
 
-    final result = await _service.checkWrite(_image!.path, real);
+    try {
+      final result = await _service.checkWrite(_image!.path, real);
 
-    if (mounted) {
-      setState(() => _isChecking = false);
+      if (mounted) {
+        setState(() => _isChecking = false);
 
-      if (result != null && result.success) {
+        if (result != null && result.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Jawaban Benar!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          if (!_isPremium && _interstitialAd != null) {
+            _interstitialAd!.fullScreenContentCallback =
+                FullScreenContentCallback(
+                  onAdDismissedFullScreenContent: (ad) {
+                    ad.dispose();
+                    if (mounted) Navigator.pop(context, true);
+                  },
+                  onAdFailedToShowFullScreenContent: (ad, err) {
+                    ad.dispose();
+                    if (mounted) Navigator.pop(context, true);
+                  },
+                );
+            _interstitialAd!.show();
+          } else {
+            Navigator.pop(context, true);
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result?.message ?? 'Jawaban Salah, coba lagi'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isChecking = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Jawaban Benar!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context, true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result?.message ?? 'Jawaban Salah, coba lagi'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     }
@@ -252,6 +347,13 @@ class _LevelThreePageState extends State<LevelThreePage> {
           ),
         ),
       ),
+      bottomNavigationBar: _isBannerReady && !_isPremium && _bannerAd != null
+          ? SizedBox(
+              height: _bannerAd!.size.height.toDouble(),
+              width: _bannerAd!.size.width.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            )
+          : null,
     );
   }
 }

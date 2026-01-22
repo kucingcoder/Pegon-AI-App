@@ -4,6 +4,8 @@ import '../../data/models/level_check_response.dart';
 import 'level_one_page.dart';
 import 'level_two_page.dart';
 import 'level_three_page.dart';
+import '../../../dashboard/data/dashboard_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LevelListPage extends StatefulWidget {
   const LevelListPage({super.key});
@@ -17,19 +19,74 @@ class _LevelListPageState extends State<LevelListPage> {
   LevelCheckResponse? _data;
   bool _isLoading = true;
 
+  // Ads
+  BannerAd? _bannerAd;
+  bool _isBannerReady = false;
+  bool _isPremium = true;
+  final DashboardService _dashboardService = DashboardService();
+
   @override
   void initState() {
     super.initState();
     _loadData();
+    _checkPremiumAndLoadAds();
+  }
+
+  Future<void> _checkPremiumAndLoadAds() async {
+    final data = await _dashboardService.getDashboardData();
+    if (data != null && mounted) {
+      setState(() {
+        _isPremium = data.user.isPremium;
+      });
+
+      if (!_isPremium) {
+        _loadBannerAd();
+      }
+    }
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-1144248073011584/6668460405',
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+          _isBannerReady = false;
+        },
+      ),
+    );
+    _bannerAd?.load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
-    final data = await _service.checkLevelStage();
-    if (mounted) {
-      setState(() {
-        _data = data;
-        _isLoading = false;
-      });
+    try {
+      final data = await _service.checkLevelStage();
+      if (mounted) {
+        setState(() {
+          _data = data;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -129,6 +186,13 @@ class _LevelListPageState extends State<LevelListPage> {
           ),
         ],
       ),
+      bottomNavigationBar: _isBannerReady && !_isPremium && _bannerAd != null
+          ? SizedBox(
+              height: _bannerAd!.size.height.toDouble(),
+              width: _bannerAd!.size.width.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            )
+          : null,
     );
   }
 

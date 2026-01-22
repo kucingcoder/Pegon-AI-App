@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../data/transliteration_service.dart';
+import '../../../dashboard/data/dashboard_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class TextTransliterationPage extends StatefulWidget {
   const TextTransliterationPage({super.key});
@@ -16,6 +18,68 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
   bool _includeHarakat = true;
   bool _isLoading = false;
   String _result = '';
+
+  // Eds
+  BannerAd? _bannerAd;
+  bool _isBannerReady = false;
+  InterstitialAd? _interstitialAd;
+  bool _isPremium = true; // Default to true to prevent ad flash until check
+  final DashboardService _dashboardService = DashboardService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPremiumAndLoadAds();
+  }
+
+  Future<void> _checkPremiumAndLoadAds() async {
+    final data = await _dashboardService.getDashboardData();
+    if (data != null && mounted) {
+      setState(() {
+        _isPremium = data.user.isPremium;
+      });
+
+      if (!_isPremium) {
+        _loadBannerAd();
+        _loadInterstitialAd();
+      }
+    }
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-1144248073011584/6668460405',
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+          _isBannerReady = false;
+        },
+      ),
+    );
+    _bannerAd?.load();
+  }
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: 'ca-app-pub-1144248073011584/9193299357',
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+        },
+        onAdFailedToLoad: (error) {
+          print('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
+  }
 
   Future<void> _transliterate() async {
     if (_textController.text.trim().isEmpty) {
@@ -37,6 +101,12 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
       setState(() {
         _result = result;
       });
+
+      if (!_isPremium && _interstitialAd != null) {
+        _interstitialAd!.show();
+        _interstitialAd = null; // Dispose reference
+        _loadInterstitialAd(); // Load next
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -476,6 +546,13 @@ class _TextTransliterationPageState extends State<TextTransliterationPage> {
           ),
         ],
       ),
+      bottomNavigationBar: _isBannerReady && !_isPremium && _bannerAd != null
+          ? SizedBox(
+              height: _bannerAd!.size.height.toDouble(),
+              width: _bannerAd!.size.width.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            )
+          : null,
     );
   }
 }

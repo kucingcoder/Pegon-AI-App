@@ -33,8 +33,12 @@ class LearningService {
         return null;
       }
     } catch (e) {
-      print('Learning service error: $e');
-      return null;
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
+      throw 'Error check level: $e';
     }
   }
 
@@ -61,8 +65,12 @@ class LearningService {
         return null;
       }
     } catch (e) {
-      print('Learning update error: $e');
-      return null;
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
+      throw 'Error update level: $e';
     }
   }
 
@@ -90,8 +98,12 @@ class LearningService {
         return null;
       }
     } catch (e) {
-      print('Learning check read error: $e');
-      return null;
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
+      throw 'Error check read: $e';
     }
   }
 
@@ -139,8 +151,12 @@ class LearningService {
         return null;
       }
     } catch (e) {
-      print('Learning check write error: $e');
-      return null;
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
+      throw 'Error check write: $e';
     }
   }
 }

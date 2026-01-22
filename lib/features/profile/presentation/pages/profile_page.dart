@@ -39,7 +39,9 @@ class _ProfilePageState extends State<ProfilePage> {
           await FlutterImageCompress.compressAndGetFile(
             image.path,
             targetPath,
-            quality: 50,
+            quality: 70,
+            minWidth: 800,
+            minHeight: 800,
           );
 
       if (compressedImage != null) {

@@ -33,7 +33,9 @@ class _LevelThreePageState extends State<LevelThreePage> {
           await FlutterImageCompress.compressAndGetFile(
             pickedFile.path,
             targetPath,
-            quality: 50,
+            quality: 70,
+            minWidth: 1568,
+            minHeight: 1568,
           );
 
       if (compressedFile != null) {

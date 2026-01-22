@@ -121,7 +121,9 @@ class _DashboardPageState extends State<DashboardPage> {
           await FlutterImageCompress.compressAndGetFile(
             image.path,
             targetPath,
-            quality: 50,
+            quality: 70,
+            minWidth: 1568,
+            minHeight: 1568,
           );
 
       if (compressedImage == null) return;

@@ -101,6 +101,11 @@ class ImageTransliterationService {
         throw 'Failed to load detail: ${response.statusCode}';
       }
     } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('ClientException')) {
+        throw 'Koneksi terputus, coba lagi!';
+      }
       throw 'Error: $e';
     }
   }

@@ -118,8 +118,17 @@ class _ImageTransliterationResultPageState
       }
     } catch (e) {
       if (mounted) {
+        String message = e.toString();
+        if (message.startsWith('Exception: ')) {
+          message = message.substring(11);
+        }
+        // If message contains "Error: ", clean it
+        if (message.contains('Error: ')) {
+          message = message.split('Error: ').last;
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
         );
         setState(() => _isLoading = false);
       }

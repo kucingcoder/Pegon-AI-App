@@ -167,7 +167,10 @@ class _DashboardPageState extends State<DashboardPage> {
         setState(() => _isUploading = false);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Terjadi kesalahan: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -180,25 +183,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     if (_data == null) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Failed to load data'),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  _loadData();
-                },
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      );
+      return _buildErrorState();
     }
 
     final user = _data!.user;
@@ -323,6 +308,100 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: AdWidget(ad: _bannerAd!),
                   ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Scaffold(
+      body: Stack(
+        children: [
+          _buildBackground(), // Reuse existing background for consistency
+          SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Illustration / Large Icon with effect
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.red.withOpacity(0.2),
+                          width: 2,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.cloud_off_rounded,
+                        size: 64,
+                        color: Colors.red[400],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Title
+                    const Text(
+                      'Oops! Gagal Memuat Data',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Description
+                    Text(
+                      'Sepertinya ada gangguan koneksi atau server sedang sibuk. Jangan khawatir, coba muat ulang ya.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Retry Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          _loadData();
+                        },
+                        icon: const Icon(Icons.refresh_rounded),
+                        label: const Text(
+                          'Coba Lagi',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -516,7 +595,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Progress Belajar',
+                    'Progres Belajar',
                     style: TextStyle(color: Colors.white.withOpacity(0.8)),
                   ),
                   Text(
@@ -624,7 +703,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Upgrade ke Premium',
+                    'Tingkatkan ke Premium',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -668,7 +747,7 @@ class _DashboardPageState extends State<DashboardPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Premium Member',
+                  'Anggota Premium',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -890,7 +969,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.title.isNotEmpty ? item.title : 'No Title',
+                      item.title.isNotEmpty ? item.title : 'Tanpa Judul',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),

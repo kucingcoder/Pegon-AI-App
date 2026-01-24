@@ -116,7 +116,7 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
           localeId: 'id_ID', // Assume Indonesian
         );
       } else {
-        setState(() => _text = 'Speech recognition not available');
+        setState(() => _text = 'Pengenalan suara tidak tersedia');
         // Request permission explicitly if initialize fails?
         var status = await Permission.microphone.status;
         if (!status.isGranted) {

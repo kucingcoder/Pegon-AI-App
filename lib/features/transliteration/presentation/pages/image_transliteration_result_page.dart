@@ -324,7 +324,7 @@ class _ImageTransliterationResultPageState
                                             )
                                           : const SizedBox(
                                               child: Center(
-                                                child: Text("No Image"),
+                                                child: Text("Tidak ada gambar"),
                                               ),
                                             ),
                                     ),

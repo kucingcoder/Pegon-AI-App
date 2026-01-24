@@ -77,7 +77,7 @@ class _ImageTransliterationHistoryPageState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error loading history: $e'),
+            content: Text('Gagal memuat riwayat: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -150,7 +150,7 @@ class _ImageTransliterationHistoryPageState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.title.isNotEmpty ? item.title : 'No Title',
+                      item.title.isNotEmpty ? item.title : 'Tanpa Judul',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),

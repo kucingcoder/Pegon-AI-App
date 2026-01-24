@@ -288,7 +288,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     if (dateStr == null) return '-';
     try {
       final date = DateTime.parse(dateStr).toLocal();
-      return DateFormat('DD/MM/yyyy HH:mm').format(date);
+      return DateFormat('dd/MM/yyyy HH:mm').format(date);
     } catch (e) {
       return dateStr;
     }

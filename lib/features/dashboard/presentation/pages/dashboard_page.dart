@@ -11,7 +11,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../transliteration/data/image_transliteration_service.dart';
 import '../../../subscription/presentation/pages/premium_package_page.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../../learning/presentation/pages/level_list_page.dart';
+
 import '../../../../core/presentation/widgets/app_image.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -299,17 +299,10 @@ class _DashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 12),
                           _buildActionCard(
                             icon: Icons.book,
-                            color: Colors.blue,
-                            title: 'Belajar',
+                            color: Colors.grey,
+                            title: 'Belajar (Segera Hadir)',
                             subtitle: 'Pelajaran & latihan interaktif',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LevelListPage(),
-                                ),
-                              );
-                            },
+                            onTap: () {},
                           ),
                           const SizedBox(height: 24),
 

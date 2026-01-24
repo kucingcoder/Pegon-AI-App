@@ -235,8 +235,8 @@ class _ImageTransliterationResultPageState
                             children: [
                               // Image Skeleton
                               Shimmer.fromColors(
-                                baseColor: Colors.amber[200]!.withOpacity(0.5),
-                                highlightColor: Colors.teal[200]!,
+                                baseColor: Colors.grey[200]!,
+                                highlightColor: Colors.grey[50]!,
                                 child: Container(
                                   height: 300,
                                   decoration: BoxDecoration(
@@ -248,8 +248,8 @@ class _ImageTransliterationResultPageState
                               const SizedBox(height: 20),
                               // Title Skeleton
                               Shimmer.fromColors(
-                                baseColor: Colors.amber[200]!.withOpacity(0.5),
-                                highlightColor: Colors.teal[200]!,
+                                baseColor: Colors.grey[200]!,
+                                highlightColor: Colors.grey[50]!,
                                 child: Container(
                                   height: 50,
                                   decoration: BoxDecoration(
@@ -261,8 +261,8 @@ class _ImageTransliterationResultPageState
                               const SizedBox(height: 16),
                               // Date Skeleton
                               Shimmer.fromColors(
-                                baseColor: Colors.amber[200]!.withOpacity(0.5),
-                                highlightColor: Colors.teal[200]!,
+                                baseColor: Colors.grey[200]!,
+                                highlightColor: Colors.grey[50]!,
                                 child: Container(
                                   height: 70,
                                   decoration: BoxDecoration(
@@ -274,8 +274,8 @@ class _ImageTransliterationResultPageState
                               const SizedBox(height: 24),
                               // Result Skeleton
                               Shimmer.fromColors(
-                                baseColor: Colors.amber[200]!.withOpacity(0.5),
-                                highlightColor: Colors.teal[200]!,
+                                baseColor: Colors.grey[200]!,
+                                highlightColor: Colors.grey[50]!,
                                 child: Container(
                                   height: 200,
                                   decoration: BoxDecoration(

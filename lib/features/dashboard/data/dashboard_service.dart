@@ -24,7 +24,11 @@ class DashboardService {
       );
 
       if (response.statusCode == 200) {
-        return DashboardResponse.fromJson(jsonDecode(response.body));
+        final dashboardResponse = DashboardResponse.fromJson(
+          jsonDecode(response.body),
+        );
+        await prefs.setBool('is_premium', dashboardResponse.user.isPremium);
+        return dashboardResponse;
       } else {
         print('Dashboard error: ${response.statusCode} - ${response.body}');
         return null; // Or throw specific error

@@ -5,6 +5,7 @@ import 'package:app/features/auth/data/auth_service.dart';
 import 'package:app/features/dashboard/presentation/pages/dashboard_page.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,7 +57,21 @@ class AppOpenAdManager {
   }
 
   /// Shows the ad if one is available and passes premium check.
-  void showAdIfAvailable() {
+  Future<void> showAdIfAvailable() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? session = prefs.getString('session');
+
+    // 1. If not logged in, do NOT show ad
+    if (session == null) {
+      return;
+    }
+
+    // 2. If logged in but Premium, do NOT show ad
+    final bool isPremium = prefs.getBool('is_premium') ?? false;
+    if (isPremium) {
+      return;
+    }
+
     if (!isAdAvailable || _isShowingAd) {
       loadAd();
       return;

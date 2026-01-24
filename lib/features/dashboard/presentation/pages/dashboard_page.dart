@@ -577,7 +577,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildProgressCard(User user) {
     // Calculate progress (e.g. 8/30)
-    double progress = user.learningStageLevel / 30.0;
+    double progress = user.learningStageMax > 0
+        ? user.learningStageLevel / user.learningStageMax
+        : 0.0;
 
     return _buildAbstractCard(
       gradient: LinearGradient(

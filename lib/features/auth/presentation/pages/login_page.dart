@@ -145,20 +145,18 @@ class _LoginPageState extends State<LoginPage>
                         ],
                         border: Border.all(color: Colors.white, width: 2),
                       ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 300,
-                          height: 300,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.rocket_launch,
-                              size: 80,
-                              color: Colors.teal,
-                            );
-                          },
-                        ),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 300,
+                        height: 300,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.rocket_launch,
+                            size: 80,
+                            color: Colors.teal,
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 30),

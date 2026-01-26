@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app/core/constants/api_constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   static bool _isInitialized = false;
-  final String _baseUrl = 'https://rust.pegon.ai';
+  final String _baseUrl = ApiConstants.baseUrl;
 
   Future<bool> signInWithGoogle() async {
     try {
@@ -17,11 +18,9 @@ class AuthService {
         );
         _isInitialized = true;
       }
-      final GoogleSignInAccount googleUser = await _googleSignIn
-          .authenticate();
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
 
-      final GoogleSignInAuthentication googleAuth =
-          googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final String? idToken = googleAuth.idToken;
 
       if (idToken == null) {

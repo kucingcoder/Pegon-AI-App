@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app/core/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/level_check_response.dart';
@@ -8,7 +9,7 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
 class LearningService {
-  final String _baseUrl = 'https://rust.pegon.ai';
+  final String _baseUrl = ApiConstants.baseUrl;
 
   Future<LevelCheckResponse?> checkLevelStage() async {
     try {

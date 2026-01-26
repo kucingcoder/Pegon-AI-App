@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:app/core/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
 class ImageTransliterationService {
-  final String _baseUrl = 'https://rust.pegon.ai';
+  final String _baseUrl = ApiConstants.baseUrl;
 
   Future<String?> _getSession() async {
     final prefs = await SharedPreferences.getInstance();

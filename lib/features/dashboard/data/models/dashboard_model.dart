@@ -59,6 +59,8 @@ class User {
   final int learningStageMax;
   final String photoProfile;
   final String? expiredAt;
+  final String gender;
+  final String createdAt;
 
   User({
     required this.fullName,
@@ -68,6 +70,8 @@ class User {
     required this.learningStageMax,
     required this.photoProfile,
     this.expiredAt,
+    required this.gender,
+    required this.createdAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -79,6 +83,8 @@ class User {
       learningStageMax: json['learning_stage_max'] ?? 1,
       photoProfile: json['photo_profile'] ?? '',
       expiredAt: json['expired_at'],
+      gender: json['gender'] ?? 'Unknown',
+      createdAt: json['created_at'] ?? '',
     );
   }
 

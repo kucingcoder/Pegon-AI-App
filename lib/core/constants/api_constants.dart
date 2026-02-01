@@ -1,3 +1,3 @@
 class ApiConstants {
-  static const String baseUrl = "https://rust.pegon.ai";
+  static const String baseUrl = "https://pegon.ai";
 }

@@ -262,22 +262,77 @@ class _ImageTransliterationHistoryPageState
                 });
                 await _fetchHistory();
               },
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(16),
-                itemCount: _items.length + (_hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == _items.length) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator(),
+              child: _items.isEmpty && !_isLoading
+                  ? LayoutBuilder(
+                      builder: (context, constraints) => SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber[50],
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.history_edu,
+                                    size: 64,
+                                    color: Colors.amber[300],
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  'Belum ada riwayat',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Riwayat transliterasi gambar\nanda akan muncul di sini',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    );
-                  }
-                  return _buildActivityItem(_items[index]);
-                },
-              ),
+                    )
+                  : ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _items.length + (_hasMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == _items.length) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        return _buildActivityItem(_items[index]);
+                      },
+                    ),
             ),
           ),
         ],

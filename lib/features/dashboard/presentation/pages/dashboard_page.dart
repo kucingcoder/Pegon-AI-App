@@ -1060,7 +1060,43 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
         const SizedBox(height: 8),
-        if (items.isEmpty) const Center(child: Text('Belum ada aktivitas')),
+        if (items.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.amber[50],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.history_edu,
+                    size: 48,
+                    color: Colors.amber[300],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Belum ada riwayat',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Aktivitas terbaru anda akan muncul di sini',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+          ),
         ...items.map((item) => _buildActivityItem(item)),
       ],
     );

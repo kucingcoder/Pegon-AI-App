@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/learning_service.dart';
 import '../../data/models/level_check_response.dart';
-import 'level_one_page.dart';
-import 'level_two_page.dart';
-import 'level_three_page.dart';
+import 'stage_list_page.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -117,68 +115,43 @@ class _LevelListPageState extends State<LevelListPage> {
               children: [
                 _buildLevelCard(
                   level: 1,
-                  title: 'Level 1: Materi',
-                  subtitle: 'Contoh halaman penampilan materi',
+                  title: 'Level 1: Dasar Pegon',
+                  subtitle: 'Materi & Tes Membaca Pegon',
                   icon: Icons.menu_book,
                   currentLevel: currentLevel,
                   color: Colors.teal,
                   onTap: () async {
-                    // Navigate to Level 1
-                    // Check if locked? Level 1 is always unlocked basically if we can see it.
-                    // But effectively if currentLevel < 1 it would be locked (impossible).
-
-                    final result = await Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LevelOnePage(),
+                        builder: (context) => StageListPage(
+                          selectedLevel: 1,
+                          data: _data,
+                          onRefresh: () => _loadData(),
+                        ),
                       ),
-                    );
-
-                    if (result == true) {
-                      _loadData(); // Refresh data if updated
-                    }
+                    ).then((_) => _loadData());
                   },
                 ),
                 const SizedBox(height: 16),
                 _buildLevelCard(
                   level: 2,
-                  title: 'Level 2: Tes Membaca',
-                  subtitle: 'Contoh halaman tes membaca',
+                  title: 'Level 2: Kombinasi Pegon',
+                  subtitle: 'Materi & Tes Menulis Pegon',
                   icon: Icons.lock_outline,
                   currentLevel: currentLevel,
                   color: Colors.grey,
                   onTap: () async {
-                    final result = await Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LevelTwoPage(),
+                        builder: (context) => StageListPage(
+                          selectedLevel: 2,
+                          data: _data,
+                          onRefresh: () => _loadData(),
+                        ),
                       ),
-                    );
-
-                    if (result == true) {
-                      _loadData(); // Refresh data if updated
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildLevelCard(
-                  level: 3,
-                  title: 'Level 3: Tes Menulis',
-                  subtitle: 'Contoh halaman tes menulis',
-                  icon: Icons.lock_outline,
-                  currentLevel: currentLevel,
-                  color: Colors.grey,
-                  onTap: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LevelThreePage(),
-                      ),
-                    );
-
-                    if (result == true) {
-                      _loadData(); // Refresh data if updated
-                    }
+                    ).then((_) => _loadData());
                   },
                 ),
               ],
@@ -388,22 +361,19 @@ class _LevelListPageState extends State<LevelListPage> {
     // I will implement dynamic progress.
 
     int completedStages = 0;
-    int totalStages = 1;
+    int totalStages = 3; // Masing-masing level ada 3 stage
 
     if (level < currentLevel) {
-      completedStages = 1;
+      completedStages = 3;
     } else if (level == currentLevel) {
-      // If we are at this level.
-      // Assuming current_stage starts at 1.
-      // If max is 1.
-      // We probably have completed 0.
+      // Karena stage dimulai dari 1 (terbawah 1), maka yang selesai = stage sekarang dikurangi 1
       completedStages = (_data?.currentStage ?? 1) - 1;
-      totalStages = _data?.maxStageInCurrentLevel ?? 1;
-      if (totalStages < 1) totalStages = 1;
+      if (completedStages < 0) completedStages = 0;
     }
 
     double percent = completedStages / totalStages;
-    // Cap at 1.0
+    // Memastikan nilai persentase tidak di bawah 0 atau lebih dari 100%
+    if (percent < 0.0) percent = 0.0;
     if (percent > 1.0) percent = 1.0;
 
     // Special handling to match valid data

@@ -6,7 +6,10 @@ import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LevelTwoPage extends StatefulWidget {
-  const LevelTwoPage({super.key});
+  final int level;
+  final int stage;
+
+  const LevelTwoPage({super.key, required this.level, required this.stage});
 
   @override
   State<LevelTwoPage> createState() => _LevelTwoPageState();
@@ -146,7 +149,12 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
     const real = "selamat pagi";
 
     try {
-      final result = await _service.checkRead(_recognizedText, real);
+      final result = await _service.checkRead(
+        _recognizedText,
+        real,
+        widget.level,
+        widget.stage,
+      );
 
       if (mounted) {
         setState(() => _isChecking = false);
@@ -197,7 +205,7 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Level 2'),
+        title: Text('Level ${widget.level} - Membaca'),
         centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

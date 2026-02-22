@@ -43,7 +43,7 @@ class LearningService {
     }
   }
 
-  Future<LevelUpdateResponse?> updateLevelStage() async {
+  Future<LevelUpdateResponse?> updateLevelStage(int level, int stage) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final session = prefs.getString('session');
@@ -55,6 +55,7 @@ class LearningService {
       final response = await http.post(
         Uri.parse('$_baseUrl/api/check/update-level-stage'),
         headers: {'Content-Type': 'application/json', 'Cookie': session},
+        body: jsonEncode({'current_level': level, 'current_stage': stage}),
       );
 
       if (response.statusCode == 200) {
@@ -75,7 +76,12 @@ class LearningService {
     }
   }
 
-  Future<LevelUpdateResponse?> checkRead(String guess, String real) async {
+  Future<LevelUpdateResponse?> checkRead(
+    String guess,
+    String real,
+    int level,
+    int stage,
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final session = prefs.getString('session');
@@ -87,7 +93,12 @@ class LearningService {
       final response = await http.post(
         Uri.parse('$_baseUrl/api/check/read'),
         headers: {'Content-Type': 'application/json', 'Cookie': session},
-        body: jsonEncode({'guess': guess, 'real': real}),
+        body: jsonEncode({
+          'guess': guess,
+          'real': real,
+          'current_level': level,
+          'current_stage': stage,
+        }),
       );
 
       if (response.statusCode == 200) {
@@ -111,6 +122,8 @@ class LearningService {
   Future<LevelUpdateResponse?> checkWrite(
     String filePath,
     String realText,
+    int level,
+    int stage,
   ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -125,6 +138,8 @@ class LearningService {
 
       request.headers['Cookie'] = session;
       request.fields['real_text'] = realText;
+      request.fields['current_level'] = level.toString();
+      request.fields['current_stage'] = stage.toString();
 
       final mimeType = lookupMimeType(filePath);
       MediaType? contentType;

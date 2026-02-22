@@ -16,7 +16,7 @@ class LevelCheckResponse {
       currentLevel: json['current_level'] ?? 1,
       currentStage: json['current_stage'] ?? 1,
       maxLevel: json['max_level'] ?? 3,
-      maxStageInCurrentLevel: json['max_stage_in_current_level'] ?? 1,
+      maxStageInCurrentLevel: json['max_stage_in_current_level'] ?? 3,
     );
   }
 }

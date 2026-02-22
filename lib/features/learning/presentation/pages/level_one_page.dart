@@ -4,7 +4,10 @@ import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LevelOnePage extends StatefulWidget {
-  const LevelOnePage({super.key});
+  final int level;
+  final int stage;
+
+  const LevelOnePage({super.key, required this.level, required this.stage});
 
   @override
   State<LevelOnePage> createState() => _LevelOnePageState();
@@ -89,7 +92,10 @@ class _LevelOnePageState extends State<LevelOnePage> {
     });
 
     try {
-      final result = await _service.updateLevelStage();
+      final result = await _service.updateLevelStage(
+        widget.level,
+        widget.stage,
+      );
 
       if (mounted) {
         setState(() {
@@ -140,7 +146,7 @@ class _LevelOnePageState extends State<LevelOnePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Level 1'),
+        title: Text('Level ${widget.level} - Materi'),
         centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

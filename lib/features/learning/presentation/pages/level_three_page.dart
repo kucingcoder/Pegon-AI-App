@@ -7,7 +7,10 @@ import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LevelThreePage extends StatefulWidget {
-  const LevelThreePage({super.key});
+  final int level;
+  final int stage;
+
+  const LevelThreePage({super.key, required this.level, required this.stage});
 
   @override
   State<LevelThreePage> createState() => _LevelThreePageState();
@@ -133,7 +136,12 @@ class _LevelThreePageState extends State<LevelThreePage> {
     const real = "selamat pagi";
 
     try {
-      final result = await _service.checkWrite(_image!.path, real);
+      final result = await _service.checkWrite(
+        _image!.path,
+        real,
+        widget.level,
+        widget.stage,
+      );
 
       if (mounted) {
         setState(() => _isChecking = false);
@@ -184,7 +192,7 @@ class _LevelThreePageState extends State<LevelThreePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Level 3'),
+        title: Text('Level ${widget.level} - Menulis'),
         centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

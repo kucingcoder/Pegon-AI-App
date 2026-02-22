@@ -114,7 +114,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ),
                       ),
                       const Text(
-                        'Rp 30.000',
+                        'Rp 100',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -130,7 +130,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     children: [
                       Text('Biaya Admin', style: TextStyle(color: Colors.grey)),
                       Text(
-                        'Rp 250',
+                        'Rp 1',
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
                     ],
@@ -143,7 +143,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     children: [
                       Text('Total Pembayaran', style: TextStyle(fontSize: 16)),
                       Text(
-                        'Rp 30.250',
+                        'Rp 101',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

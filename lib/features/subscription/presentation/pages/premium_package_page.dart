@@ -299,7 +299,7 @@ class PremiumPackagePage extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: '30.000',
+                          text: '100',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,

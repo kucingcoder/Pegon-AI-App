@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../transliteration/data/image_transliteration_service.dart';
 import '../../../subscription/presentation/pages/premium_package_page.dart';
+import '../../../learning/presentation/pages/level_list_page.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../../core/presentation/widgets/app_image.dart';
@@ -284,10 +285,17 @@ class _DashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 12),
                           _buildActionCard(
                             icon: Icons.book,
-                            color: Colors.grey,
-                            title: 'Belajar (Segera Hadir)',
+                            color: Colors.blue,
+                            title: 'Belajar',
                             subtitle: 'Pelajaran & latihan interaktif',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LevelListPage(),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(height: 24),
 
@@ -738,10 +746,14 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildProgressCard(User user) {
-    // Calculate progress (e.g. 8/30)
-    double progress = user.learningStageMax > 0
-        ? user.learningStageLevel / user.learningStageMax
-        : 0.0;
+    // Calculate progress (e.g. 0/3)
+    int completedStages = user.learningStageLevel - 1;
+    if (completedStages < 0) completedStages = 0;
+
+    int totalStages = user.learningStageMax;
+    if (totalStages < 1) totalStages = 1;
+
+    double progress = totalStages > 0 ? (completedStages / totalStages) : 0.0;
 
     return _buildAbstractCard(
       gradient: LinearGradient(
@@ -775,8 +787,7 @@ class _DashboardPageState extends State<DashboardPage> {
               // Stars placeholder
               Row(
                 children: List.generate(5, (index) {
-                  double starValue =
-                      (user.learningStageLevel / user.learningStageMax) * 5;
+                  double starValue = (completedStages / totalStages) * 5;
                   if (index < starValue.floor()) {
                     return const Icon(
                       Icons.star,
@@ -826,7 +837,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            '${user.learningStageLevel} dari ${user.learningStageMax} tahap diselesaikan',
+            '$completedStages dari $totalStages tahap diselesaikan',
             style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
         ],

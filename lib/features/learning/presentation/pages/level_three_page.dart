@@ -103,13 +103,30 @@ class _LevelThreePageState extends State<LevelThreePage> {
       final String targetPath =
           '${pickedFile.path.substring(0, pickedFile.path.lastIndexOf('.'))}_compressed.jpg';
 
+      // Hitung dimensi baru agar sisi terpanjang maksimal 800px dan mengikuti aspek rasio
+      final bytes = await pickedFile.readAsBytes();
+      final decodedImage = await decodeImageFromList(bytes);
+      final int originalWidth = decodedImage.width;
+      final int originalHeight = decodedImage.height;
+
+      int targetWidth = 800;
+      int targetHeight = 800;
+
+      if (originalWidth > originalHeight) {
+        targetWidth = 800;
+        targetHeight = (800 * originalHeight / originalWidth).round();
+      } else {
+        targetHeight = 800;
+        targetWidth = (800 * originalWidth / originalHeight).round();
+      }
+
       final XFile? compressedFile =
           await FlutterImageCompress.compressAndGetFile(
             pickedFile.path,
             targetPath,
-            quality: 70,
-            minWidth: 1568,
-            minHeight: 1568,
+            quality: 100,
+            minWidth: targetWidth,
+            minHeight: targetHeight,
           );
 
       if (compressedFile != null) {

@@ -35,13 +35,30 @@ class _ProfilePageState extends State<ProfilePage> {
       final String targetPath =
           '${image.path.substring(0, image.path.lastIndexOf('.'))}_compressed.jpg';
 
+      // Hitung dimensi baru agar sisi terpanjang maksimal 800px dan mengikuti aspek rasio
+      final bytes = await image.readAsBytes();
+      final decodedImage = await decodeImageFromList(bytes);
+      final int originalWidth = decodedImage.width;
+      final int originalHeight = decodedImage.height;
+
+      int targetWidth = 800;
+      int targetHeight = 800;
+
+      if (originalWidth > originalHeight) {
+        targetWidth = 800;
+        targetHeight = (800 * originalHeight / originalWidth).round();
+      } else {
+        targetHeight = 800;
+        targetWidth = (800 * originalWidth / originalHeight).round();
+      }
+
       final XFile? compressedImage =
           await FlutterImageCompress.compressAndGetFile(
             image.path,
             targetPath,
-            quality: 70,
-            minWidth: 800,
-            minHeight: 800,
+            quality: 100,
+            minWidth: targetWidth,
+            minHeight: targetHeight,
           );
 
       if (compressedImage != null) {

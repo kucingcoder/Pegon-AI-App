@@ -409,19 +409,6 @@ class _LevelListPageState extends State<LevelListPage> {
             minHeight: 8,
           ),
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: List.generate(5, (index) {
-            // Stars logic.
-            // If 100% -> 5 stars? Or based on score?
-            // API doesn't return score. I'll just show full stars if completed, or empty if not.
-            return Icon(
-              Icons.star,
-              color: percent >= 1.0 ? Colors.amber : Colors.grey[300],
-              size: 20,
-            );
-          }),
-        ),
       ],
     );
   }

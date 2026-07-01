@@ -36,7 +36,12 @@ class TransliterationService {
           response.body.contains('Transliteration limit reached')) {
         throw 'Batas harian akun gratis terlewati';
       } else {
-        throw 'Failed to transliterate: ${response.statusCode}';
+        String errorMessage = 'Sedang dalam pemeliharaan';
+        try {
+          final errorData = jsonDecode(response.body);
+          errorMessage = errorData['message'] ?? errorData['error'] ?? errorMessage;
+        } catch (_) {}
+        throw errorMessage;
       }
     } catch (e) {
       if (e.toString().contains('SocketException') ||

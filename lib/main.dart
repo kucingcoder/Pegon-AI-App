@@ -114,7 +114,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pegon AI : Membaca, Menulis, dan Belajar',
+      title: 'Smart Pegon : Membaca, Menulis, dan Belajar',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFFFD700),

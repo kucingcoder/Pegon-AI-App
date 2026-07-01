@@ -161,7 +161,7 @@ class _LoginPageState extends State<LoginPage>
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'PEGON AI',
+                      'SMART PEGON',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,

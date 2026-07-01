@@ -43,7 +43,12 @@ class ImageTransliterationService {
         final data = jsonDecode(response.body);
         return data['history']; // Returns history ID
       } else {
-        throw 'Failed to upload image: ${response.statusCode} - ${response.body}';
+        String errorMessage = 'Sedang dalam pemeliharaan';
+        try {
+          final errorData = jsonDecode(response.body);
+          errorMessage = errorData['message'] ?? errorData['error'] ?? errorMessage;
+        } catch (_) {}
+        throw errorMessage;
       }
     } catch (e) {
       if (e.toString().contains('SocketException') ||
@@ -51,7 +56,8 @@ class ImageTransliterationService {
           e.toString().contains('ClientException')) {
         throw 'Koneksi terputus, coba lagi!';
       }
-      throw 'Error uploading image: $e';
+      if (e is String) rethrow;
+      throw 'Sedang dalam pemeliharaan';
     }
   }
 
@@ -71,7 +77,12 @@ class ImageTransliterationService {
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw 'Failed to load history: ${response.statusCode}';
+        String errorMessage = 'Sedang dalam pemeliharaan';
+        try {
+          final errorData = jsonDecode(response.body);
+          errorMessage = errorData['message'] ?? errorData['error'] ?? errorMessage;
+        } catch (_) {}
+        throw errorMessage;
       }
     } catch (e) {
       if (e.toString().contains('SocketException') ||
@@ -79,7 +90,8 @@ class ImageTransliterationService {
           e.toString().contains('ClientException')) {
         throw 'Koneksi terputus, coba lagi!';
       }
-      throw 'Error: $e';
+      if (e is String) rethrow;
+      throw 'Sedang dalam pemeliharaan';
     }
   }
 
@@ -99,7 +111,12 @@ class ImageTransliterationService {
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw 'Failed to load detail: ${response.statusCode}';
+        String errorMessage = 'Sedang dalam pemeliharaan';
+        try {
+          final errorData = jsonDecode(response.body);
+          errorMessage = errorData['message'] ?? errorData['error'] ?? errorMessage;
+        } catch (_) {}
+        throw errorMessage;
       }
     } catch (e) {
       if (e.toString().contains('SocketException') ||
@@ -107,7 +124,8 @@ class ImageTransliterationService {
           e.toString().contains('ClientException')) {
         throw 'Koneksi terputus, coba lagi!';
       }
-      throw 'Error: $e';
+      if (e is String) rethrow;
+      throw 'Sedang dalam pemeliharaan';
     }
   }
 
@@ -128,7 +146,12 @@ class ImageTransliterationService {
       );
 
       if (response.statusCode != 200) {
-        throw 'Failed to update title: ${response.statusCode}';
+        String errorMessage = 'Sedang dalam pemeliharaan';
+        try {
+          final errorData = jsonDecode(response.body);
+          errorMessage = errorData['message'] ?? errorData['error'] ?? errorMessage;
+        } catch (_) {}
+        throw errorMessage;
       }
     } catch (e) {
       if (e.toString().contains('SocketException') ||
@@ -136,7 +159,8 @@ class ImageTransliterationService {
           e.toString().contains('ClientException')) {
         throw 'Koneksi terputus, coba lagi!';
       }
-      throw 'Error updating title: $e';
+      if (e is String) rethrow;
+      throw 'Sedang dalam pemeliharaan';
     }
   }
 }

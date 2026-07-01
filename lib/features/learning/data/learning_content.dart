@@ -51,6 +51,7 @@ final List<LevelContent> learningLevels = [
         title: 'Aturan Penulisan',
         infoTitle: 'Bahasa Arab',
         infoText: 'Penamaan orang, tempat, maupun tindakan dalam bahasa Arab tetap ditulis dalam bahasa Arab seperti Muhammad, Ali, Sholat, Romadhon, dll.',
+        imagePath: 'assets/images/kitab.png',
       ),
       StageContent(
         type: StageType.info,
@@ -70,6 +71,7 @@ final List<LevelContent> learningLevels = [
         title: 'Mengenal Harakat',
         infoTitle: 'Harakat Vokal',
         infoText: 'Mengenal harakat pegon A, I, U, E, O dan cara menulisnya dalam kata.',
+        imagePath: 'assets/images/vokal.png',
       ),
       StageContent(
         type: StageType.read,
@@ -126,6 +128,7 @@ final List<LevelContent> learningLevels = [
         title: 'Huruf C',
         infoTitle: 'Huruf C (چ)',
         infoText: 'Huruf C dalam Pegon ditulis dengan modifikasi huruf Jim (چ).',
+        imagePath: 'assets/images/c.png',
       ),
       StageContent(
         type: StageType.read,
@@ -150,6 +153,7 @@ final List<LevelContent> learningLevels = [
         title: 'Huruf G',
         infoTitle: 'Huruf G (ڮ)',
         infoText: 'Huruf G ditulis dengan modifikasi huruf Kaf bersimbol (ڮ).',
+        imagePath: 'assets/images/g.png',
       ),
       StageContent(
         type: StageType.read,
@@ -174,6 +178,7 @@ final List<LevelContent> learningLevels = [
         title: 'Huruf P',
         infoTitle: 'Huruf P (ڤ)',
         infoText: 'Huruf P ditulis dengan modifikasi huruf Fa (ڤ).',
+        imagePath: 'assets/images/p.png',
       ),
       StageContent(
         type: StageType.read,
@@ -198,6 +203,7 @@ final List<LevelContent> learningLevels = [
         title: 'Huruf NG',
         infoTitle: 'Huruf NG (ڠ)',
         infoText: 'Huruf NG ditulis dengan modifikasi huruf Ain (ڠ).',
+        imagePath: 'assets/images/ng.png',
       ),
       StageContent(
         type: StageType.read,
@@ -222,6 +228,7 @@ final List<LevelContent> learningLevels = [
         title: 'Huruf NY',
         infoTitle: 'Huruf NY (ۑ)',
         infoText: 'Huruf NY ditulis menggunakan modifikasi huruf Ya (ۑ).',
+        imagePath: 'assets/images/ny.png',
       ),
       StageContent(
         type: StageType.read,

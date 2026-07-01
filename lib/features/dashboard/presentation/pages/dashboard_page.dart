@@ -763,14 +763,20 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildProgressCard(User user) {
-    // Calculate progress (e.g. 0/3)
-    int completedStages = user.learningStageLevel - 1;
-    if (completedStages < 0) completedStages = 0;
+    int displayLevel = user.learningLevel > 9 ? 9 : user.learningLevel;
+    
+    // Gunakan Level untuk keseluruhan progres (9 Level)
+    int completedLevels = displayLevel - 1;
+    if (completedLevels < 0) completedLevels = 0;
+    
+    int totalLevels = 9;
 
-    int totalStages = user.learningStageMax;
-    if (totalStages < 1) totalStages = 1;
+    // Cap at Level 9 jika sudah tamat
+    if (user.learningLevel > 9 || (user.learningLevel == 9 && user.learningStageLevel >= 10)) {
+      completedLevels = 9;
+    }
 
-    double progress = totalStages > 0 ? (completedStages / totalStages) : 0.0;
+    double progress = totalLevels > 0 ? (completedLevels / totalLevels) : 0.0;
 
     return _buildAbstractCard(
       gradient: LinearGradient(
@@ -792,7 +798,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     style: TextStyle(color: Colors.white.withOpacity(0.8)),
                   ),
                   Text(
-                    'Level ${user.learningLevel}',
+                    'Level $displayLevel',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -804,7 +810,7 @@ class _DashboardPageState extends State<DashboardPage> {
               // Stars placeholder
               Row(
                 children: List.generate(5, (index) {
-                  double starValue = (completedStages / totalStages) * 5;
+                  double starValue = (completedLevels / totalLevels) * 5;
                   if (index < starValue.floor()) {
                     return const Icon(
                       Icons.star,
@@ -854,7 +860,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            '$completedStages dari $totalStages tahap diselesaikan',
+            '$completedLevels dari $totalLevels tahap diselesaikan',
             style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
         ],

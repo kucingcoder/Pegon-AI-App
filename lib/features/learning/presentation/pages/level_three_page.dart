@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../../../../core/utils/animated_result_dialog.dart';
 
 class LevelThreePage extends StatefulWidget {
   final int level;
@@ -164,34 +165,35 @@ class _LevelThreePageState extends State<LevelThreePage> {
         setState(() => _isChecking = false);
 
         if (result != null && result.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Jawaban Benar!'),
-              backgroundColor: Colors.green,
-            ),
+          showAnimatedResultDialog(
+            context: context,
+            isSuccess: true,
+            message: 'Tulisan Pegon kamu sempurna!',
+            onNext: () {
+              if (!_isPremium && _interstitialAd != null) {
+                _interstitialAd!.fullScreenContentCallback =
+                    FullScreenContentCallback(
+                      onAdDismissedFullScreenContent: (ad) {
+                        ad.dispose();
+                        if (mounted) Navigator.pop(context, true);
+                      },
+                      onAdFailedToShowFullScreenContent: (ad, err) {
+                        ad.dispose();
+                        if (mounted) Navigator.pop(context, true);
+                      },
+                    );
+                _interstitialAd!.show();
+              } else {
+                Navigator.pop(context, true);
+              }
+            },
           );
-          if (!_isPremium && _interstitialAd != null) {
-            _interstitialAd!.fullScreenContentCallback =
-                FullScreenContentCallback(
-                  onAdDismissedFullScreenContent: (ad) {
-                    ad.dispose();
-                    if (mounted) Navigator.pop(context, true);
-                  },
-                  onAdFailedToShowFullScreenContent: (ad, err) {
-                    ad.dispose();
-                    if (mounted) Navigator.pop(context, true);
-                  },
-                );
-            _interstitialAd!.show();
-          } else {
-            Navigator.pop(context, true);
-          }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result?.message ?? 'Jawaban Salah, coba lagi'),
-              backgroundColor: Colors.red,
-            ),
+          showAnimatedResultDialog(
+            context: context,
+            isSuccess: false,
+            message: result?.message ?? 'Tulisan kamu masih kurang tepat, yuk perbaiki dan coba lagi!',
+            onNext: () {},
           );
         }
       }

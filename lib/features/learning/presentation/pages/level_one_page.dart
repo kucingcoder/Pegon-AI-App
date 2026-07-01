@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import '../../data/learning_service.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../../data/learning_content.dart';
 
 class LevelOnePage extends StatefulWidget {
   final int level;
   final int stage;
+  final StageContent content;
 
-  const LevelOnePage({super.key, required this.level, required this.stage});
+  const LevelOnePage({super.key, required this.level, required this.stage, required this.content});
 
   @override
   State<LevelOnePage> createState() => _LevelOnePageState();
@@ -177,9 +179,9 @@ class _LevelOnePageState extends State<LevelOnePage> {
                       ),
                       child: Column(
                         children: [
-                          const Text(
-                            'AKSARA PEGON',
-                            style: TextStyle(
+                          Text(
+                            widget.content.infoTitle ?? 'INFO',
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF1A237E), // Dark blue
@@ -189,7 +191,7 @@ class _LevelOnePageState extends State<LevelOnePage> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
-                              'assets/images/pegon.png',
+                              widget.content.imagePath ?? 'assets/images/pegon.png',
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -197,11 +199,11 @@ class _LevelOnePageState extends State<LevelOnePage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Lorem Ipsum text
-                    const Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu tincidunt arcu. Cras eu rutrum magna, a varius erat. Morbi urna urna, placerat id vehicula et, blandit eget sem. Proin vitae erat sodales, fringilla dolor et, euismod nisl. Etiam vel erat rutrum, tincidunt sem id, egestas nibh.',
+                    // Dynamic text
+                    Text(
+                      widget.content.infoText ?? '',
                       textAlign: TextAlign.justify,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.black87,
                         height: 1.5,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/learning_service.dart';
 import '../../data/models/level_check_response.dart';
 import 'stage_list_page.dart';
+import '../../data/learning_content.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -69,6 +70,36 @@ class _LevelListPageState extends State<LevelListPage> {
     super.dispose();
   }
 
+  IconData _getIconForLevel(int level) {
+    switch (level) {
+      case 1: return Icons.abc;
+      case 2: return Icons.record_voice_over;
+      case 3: return Icons.spellcheck;
+      case 4: return Icons.font_download;
+      case 5: return Icons.g_translate;
+      case 6: return Icons.text_fields;
+      case 7: return Icons.library_books;
+      case 8: return Icons.workspace_premium;
+      case 9: return Icons.school;
+      default: return Icons.menu_book;
+    }
+  }
+
+  Color _getColorForLevel(int level) {
+    switch (level) {
+      case 1: return Colors.teal;
+      case 2: return Colors.blue;
+      case 3: return Colors.indigo;
+      case 4: return Colors.purple;
+      case 5: return Colors.deepPurple;
+      case 6: return Colors.orange;
+      case 7: return Colors.deepOrange;
+      case 8: return Colors.red;
+      case 9: return Colors.pink;
+      default: return Colors.cyan;
+    }
+  }
+
   Future<void> _loadData() async {
     try {
       final data = await _service.checkLevelStage();
@@ -110,51 +141,34 @@ class _LevelListPageState extends State<LevelListPage> {
         children: [
           _buildBackground(),
           SafeArea(
-            child: ListView(
+            child: ListView.separated(
               padding: const EdgeInsets.all(20),
-              children: [
-                _buildLevelCard(
-                  level: 1,
-                  title: 'Level 1: Dasar Pegon',
-                  subtitle: 'Materi & Tes Membaca Pegon',
-                  icon: Icons.menu_book,
+              itemCount: learningLevels.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final levelContent = learningLevels[index];
+                return _buildLevelCard(
+                  level: levelContent.level,
+                  title: levelContent.title,
+                  subtitle: levelContent.subtitle,
+                  icon: _getIconForLevel(levelContent.level),
                   currentLevel: currentLevel,
-                  color: Colors.teal,
+                  color: _getColorForLevel(levelContent.level),
+                  totalStages: levelContent.stages.length,
                   onTap: () async {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => StageListPage(
-                          selectedLevel: 1,
+                          selectedLevel: levelContent.level,
                           data: _data,
                           onRefresh: () => _loadData(),
                         ),
                       ),
                     ).then((_) => _loadData());
                   },
-                ),
-                const SizedBox(height: 16),
-                _buildLevelCard(
-                  level: 2,
-                  title: 'Level 2: Kombinasi Pegon',
-                  subtitle: 'Materi & Tes Menulis Pegon',
-                  icon: Icons.lock_outline,
-                  currentLevel: currentLevel,
-                  color: Colors.grey,
-                  onTap: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => StageListPage(
-                          selectedLevel: 2,
-                          data: _data,
-                          onRefresh: () => _loadData(),
-                        ),
-                      ),
-                    ).then((_) => _loadData());
-                  },
-                ),
-              ],
+                );
+              },
             ),
           ),
         ],
@@ -219,6 +233,7 @@ class _LevelListPageState extends State<LevelListPage> {
     required IconData icon,
     required int currentLevel,
     required Color color,
+    required int totalStages,
     VoidCallback? onTap,
   }) {
     final isLocked = level > currentLevel;
@@ -226,13 +241,11 @@ class _LevelListPageState extends State<LevelListPage> {
     final cardColor = isLocked ? Colors.grey[100] : Colors.white;
     final iconBgColor = isLocked
         ? Colors.grey[200]
-        : (level == 1
-              ? Colors.cyan
-              : Colors.cyan); // Use cyan for active levels
+        : color; 
     final iconColor = isLocked ? Colors.grey : Colors.white;
     final actualIcon = isLocked
         ? Icons.lock_outline
-        : (level == 1 ? Icons.menu_book : Icons.edit); // Customize icons
+        : icon; 
 
     return GestureDetector(
       onTap: isLocked ? null : onTap,
@@ -316,58 +329,27 @@ class _LevelListPageState extends State<LevelListPage> {
                 ),
               )
             else
-              _buildProgressSection(level, currentLevel),
+              _buildProgressSection(level, currentLevel, totalStages),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProgressSection(int level, int currentLevel) {
-    // Logic for progress visualization
-    // If level < currentLevel, assume 100% done.
-    // If level == currentLevel, calculate based on stage.
-    // User said "masing-masing cuma 1 stage". So if checking "level-stage", it might return current_stage: 1, max: 1.
-    // If I'm AT level 1, stage 1... is it 0% or what?
-    // Let's assume if I'm AT level 1, I haven't finished it yet?
-    // OR if existing logic implies "current_level: 1" means Level 1 is accessible.
-
-    // Let's simply show:
-    // If level < currentLevel -> 1/1 Selesai 100%
-    // If level == currentLevel -> "Belum Selesai" or "0/1" or depending on stage.
-
-    // Wait, the API returns current level.
-    // If current_level = 1. User sees Level 1.
-    // Is Level 1 finished? No.
-    // So progress is 0/1. 0%.
-
-    // BUT the image for Level 1 shows "1/1 Selesai 100%".
-    // This implies Level 1 is DONE.
-    // So maybe the user in the screenshot has current_level = 2 ?
-    // Or maybe the API returns "current_level: 1" meaning "Working on Level 1".
-    // If the screenshot shows Level 1 done, likely they have finished it.
-
-    // I will stick to logic:
-    // If level < currentLevel -> 100%.
-    // If level == currentLevel -> Calculate % based on stage.
-    // Since max stage is 1. If current_stage is 1. Progress = (1-1)/1 = 0% ?
-    // Or maybe stage 1 means started stage 1.
-
-    // Let's mock it for now to match visual appealing.
-    // If level == currentLevel, I'll show it as "Active" or partial progress.
-    // In many games, if I am Level 1, I have 0 progress on Level 1.
-
-    // However, for the purpose of matching the "1/1 Selesai 100%" look in the request image (which is likely a reference to what it *should* look like when done, or the user wants Level 1 to be done):
-    // I will implement dynamic progress.
-
+  Widget _buildProgressSection(int level, int currentLevel, int totalStages) {
     int completedStages = 0;
-    int totalStages = 3; // Masing-masing level ada 3 stage
 
     if (level < currentLevel) {
-      completedStages = 3;
+      completedStages = totalStages;
     } else if (level == currentLevel) {
       // Karena stage dimulai dari 1 (terbawah 1), maka yang selesai = stage sekarang dikurangi 1
       completedStages = (_data?.currentStage ?? 1) - 1;
+      
+      // Fix for final level/stage stuck bug
+      if (level == 9 && (_data?.currentStage ?? 1) == 10) {
+        completedStages = 10;
+      }
+      
       if (completedStages < 0) completedStages = 0;
     }
 

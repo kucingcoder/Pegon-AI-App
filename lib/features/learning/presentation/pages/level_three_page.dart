@@ -6,12 +6,19 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../../core/utils/animated_result_dialog.dart';
+import '../../data/learning_content.dart';
 
 class LevelThreePage extends StatefulWidget {
   final int level;
   final int stage;
+  final StageContent content;
 
-  const LevelThreePage({super.key, required this.level, required this.stage});
+  const LevelThreePage({
+    super.key,
+    required this.level,
+    required this.stage,
+    required this.content,
+  });
 
   @override
   State<LevelThreePage> createState() => _LevelThreePageState();
@@ -151,7 +158,7 @@ class _LevelThreePageState extends State<LevelThreePage> {
 
     setState(() => _isChecking = true);
 
-    const real = "selamat pagi";
+    final real = widget.content.latinText?.toLowerCase() ?? "";
 
     try {
       final result = await _service.checkWrite(
@@ -192,7 +199,9 @@ class _LevelThreePageState extends State<LevelThreePage> {
           showAnimatedResultDialog(
             context: context,
             isSuccess: false,
-            message: result?.message ?? 'Tulisan kamu masih kurang tepat, yuk perbaiki dan coba lagi!',
+            message:
+                result?.message ??
+                'Tulisan kamu masih kurang tepat, yuk perbaiki dan coba lagi!',
             onNext: () {},
           );
         }
@@ -257,18 +266,18 @@ class _LevelThreePageState extends State<LevelThreePage> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Tulis kalimat ini dalam Pegon:',
+                          const Text(
+                            'Tulis kata/kalimat ini dalam Pegon:',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
-                            'Selamat Pagi',
-                            style: TextStyle(
+                            widget.content.latinText ?? '',
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,

@@ -5,12 +5,14 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../dashboard/data/dashboard_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../../core/utils/animated_result_dialog.dart';
+import '../../data/learning_content.dart';
 
 class LevelTwoPage extends StatefulWidget {
   final int level;
   final int stage;
+  final StageContent content;
 
-  const LevelTwoPage({super.key, required this.level, required this.stage});
+  const LevelTwoPage({super.key, required this.level, required this.stage, required this.content});
 
   @override
   State<LevelTwoPage> createState() => _LevelTwoPageState();
@@ -89,6 +91,7 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
 
   @override
   void dispose() {
+    _speech.cancel();
     _bannerAd?.dispose();
     _interstitialAd?.dispose();
     super.dispose();
@@ -116,7 +119,7 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
             _text = val.recognizedWords;
             _recognizedText = val.recognizedWords;
           }),
-          listenMode: stt.ListenMode.dictation,
+          pauseFor: const Duration(seconds: 3),
           localeId: 'id_ID', // Assume Indonesian
         );
       } else {
@@ -146,8 +149,8 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
 
     setState(() => _isChecking = true);
 
-    // Real answer hardcoded as per instructions
-    const real = "selamat pagi";
+    // Real answer from content
+    final real = widget.content.latinText?.toLowerCase() ?? "";
 
     try {
       final result = await _service.checkRead(
@@ -242,10 +245,10 @@ class _LevelTwoPageState extends State<LevelTwoPage> {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: Colors.amber.withOpacity(0.3)),
                 ),
-                child: const Text(
-                  'سۤلَمَتْ ڤَاڮِي',
+                child: Text(
+                  widget.content.pegonText ?? '',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF1A237E),

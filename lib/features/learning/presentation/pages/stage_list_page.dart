@@ -3,6 +3,7 @@ import '../../data/models/level_check_response.dart';
 import 'level_one_page.dart';
 import 'level_two_page.dart';
 import 'level_three_page.dart';
+import '../../data/learning_content.dart';
 
 class StageListPage extends StatefulWidget {
   final int selectedLevel;
@@ -23,27 +24,16 @@ class StageListPage extends StatefulWidget {
 class _StageListPageState extends State<StageListPage> {
   void _navigateToStage(int stageIndex) async {
     Widget page;
-    // Stage logic:
-    // Level 1: 0 (Materi), 1 (Membaca), 2 (Membaca)
-    // Level 2: 0 (Materi), 1 (Menulis), 2 (Menulis)
-
-    // We pass 1-based index or 0-based index to API?
-    // "untuk update stage ketika di materi.. body json: current_stage: 0" -> 0-based.
-
     int apiStage = stageIndex + 1; // Backend requires 1-based index
-
-    if (widget.selectedLevel == 1) {
-      if (stageIndex == 0) {
-        page = LevelOnePage(level: widget.selectedLevel, stage: apiStage);
-      } else {
-        page = LevelTwoPage(level: widget.selectedLevel, stage: apiStage);
-      }
+    final levelContent = learningLevels.firstWhere((l) => l.level == widget.selectedLevel);
+    final stageContent = levelContent.stages[stageIndex];
+    
+    if (stageContent.type == StageType.info) {
+      page = LevelOnePage(level: widget.selectedLevel, stage: apiStage, content: stageContent);
+    } else if (stageContent.type == StageType.read) {
+      page = LevelTwoPage(level: widget.selectedLevel, stage: apiStage, content: stageContent);
     } else {
-      if (stageIndex == 0) {
-        page = LevelOnePage(level: widget.selectedLevel, stage: apiStage);
-      } else {
-        page = LevelThreePage(level: widget.selectedLevel, stage: apiStage);
-      }
+      page = LevelThreePage(level: widget.selectedLevel, stage: apiStage, content: stageContent);
     }
 
     final result = await Navigator.push(
@@ -66,13 +56,7 @@ class _StageListPageState extends State<StageListPage> {
     final currentLevel = widget.data?.currentLevel ?? 1;
     final currentStage = widget.data?.currentStage ?? 1;
 
-    String stage1Title = 'Materi';
-    String stage2Title = widget.selectedLevel == 1
-        ? 'Tes Membaca 1'
-        : 'Tes Menulis 1';
-    String stage3Title = widget.selectedLevel == 1
-        ? 'Tes Membaca 2'
-        : 'Tes Menulis 2';
+    final levelContent = learningLevels.firstWhere((l) => l.level == widget.selectedLevel);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -87,33 +71,25 @@ class _StageListPageState extends State<StageListPage> {
         children: [
           _buildBackground(),
           SafeArea(
-            child: ListView(
+            child: ListView.separated(
               padding: const EdgeInsets.all(20),
-              children: [
-                _buildStageCard(
-                  stageIndex: 0,
-                  title: 'Stage 1: $stage1Title',
-                  icon: Icons.menu_book,
+              itemCount: levelContent.stages.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final stageContent = levelContent.stages[index];
+                IconData icon;
+                if (stageContent.type == StageType.info) icon = Icons.menu_book;
+                else if (stageContent.type == StageType.read) icon = Icons.mic;
+                else icon = Icons.edit;
+                
+                return _buildStageCard(
+                  stageIndex: index,
+                  title: 'Stage ${index + 1}: ${stageContent.title}',
+                  icon: icon,
                   userCurrentLevel: currentLevel,
                   userCurrentStage: currentStage,
-                ),
-                const SizedBox(height: 16),
-                _buildStageCard(
-                  stageIndex: 1,
-                  title: 'Stage 2: $stage2Title',
-                  icon: widget.selectedLevel == 1 ? Icons.mic : Icons.edit,
-                  userCurrentLevel: currentLevel,
-                  userCurrentStage: currentStage,
-                ),
-                const SizedBox(height: 16),
-                _buildStageCard(
-                  stageIndex: 2,
-                  title: 'Stage 3: $stage3Title',
-                  icon: widget.selectedLevel == 1 ? Icons.mic : Icons.edit,
-                  userCurrentLevel: currentLevel,
-                  userCurrentStage: currentStage,
-                ),
-              ],
+                );
+              },
             ),
           ),
         ],
@@ -174,6 +150,11 @@ class _StageListPageState extends State<StageListPage> {
       isLocked = false;
     } else if (widget.selectedLevel == userCurrentLevel) {
       isLocked = (stageIndex + 1) > userCurrentStage;
+      
+      // Special case: if at max level and max stage, it's not locked
+      if (widget.selectedLevel == 9 && userCurrentStage == 10 && stageIndex == 9) {
+        isLocked = false;
+      }
     }
 
     // Determine completion status
@@ -182,6 +163,11 @@ class _StageListPageState extends State<StageListPage> {
       isCompleted = true;
     } else if (widget.selectedLevel == userCurrentLevel) {
       isCompleted = (stageIndex + 1) < userCurrentStage;
+      
+      // Fix for final level/stage bug
+      if (widget.selectedLevel == 9 && userCurrentStage == 10 && stageIndex == 9) {
+        isCompleted = true;
+      }
     }
 
     final cardColor = isLocked ? Colors.grey[100] : Colors.white;
